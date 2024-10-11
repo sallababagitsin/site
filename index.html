@@ -266,6 +266,20 @@
             showLoader();  
             setTimeout(loadAPIs, 2000); // Simüle edilmiş yükleme süresi  
         });  
+                fetch('/fetch-index')  
+            .then(response => {  
+                if (!response.ok) {  
+                    throw new Error('Ağ yanıtı sorunlu: ' + response.statusText);  
+                }  
+                return response.text(); // Yanıtı metin olarak döndür  
+            })  
+            .then(data => {  
+                document.getElementById('content').innerHTML = data; // İçeriği div'e yerleştir  
+            })  
+            .catch(error => {  
+                console.error('Fetch hatası:', error);  
+                document.getElementById('content').innerText = 'Bir hata oluştu: ' + error.message;  
+            });  
     </script>  
 </body>  
 </html>
