@@ -1,4 +1,4 @@
-[
+const ilgincBilgiler = [
     "İnsan DNA'sının %50'si muzla aynıdır.",
     "Kutup ayılarının kürkleri aslında beyaz değil, şeffaftır.",
     "Bir salyangoz 3 yıl boyunca uyuyabilir.",
@@ -495,4 +495,6 @@
     "Dünyanın en büyük deniz memelisi, mavi balinadır.",
     "Bir kedi, ortalama 20-25 km/h hızla koşabilir.",
     "Kediler, günde ortalama 12-16 saat yurlar."
-]
+];
+
+module.exports = ilgincBilgiler;
