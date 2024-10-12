@@ -1,297 +1,271 @@
-<!DOCTYPE html>
-<html lang="tr">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Starr Inc. - API</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #1c1c1c;
-            margin: 0;
-            padding: 0;
-            color: #fff;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        header {
-            background: linear-gradient(90deg, rgba(29, 185, 245, 1) 0%, rgba(255, 60, 144, 1) 100%);
-            color: #fff;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            width: 100%;
-        }
-
-        header h1 {
-            margin: 0;
-            font-size: 24px;
-            text-shadow: 0 0 5px rgba(29, 185, 245, 0.8);
-        }
-
-        .btn {
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
-            border: none;
-            padding: 10px 15px;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: background 0.3s, transform 0.3s;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-        }
-
-        .btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.05);
-        }
-
-        .container {
-            padding: 20px;
-            overflow-y: auto;
-            height: calc(100vh - 80px);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-        }
-
-        .api-card {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            margin: 10px 0;
-            padding: 15px;
-            transition: transform 0.3s, box-shadow 0.3s;
-            width: 80%;
-        }
-
-        .api-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .api-form {
-            display: none;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            margin: 20px 0;
-            width: 80%;
-        }
-
-        .api-form input,
-        .api-form textarea {
-            width: 100%;
-            padding: 10px;
-            margin: 5px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
-        }
-
-        .api-list {
-            margin-top: 20px;
-            width: 100%;
-        }
-
-        .api-title {
-            font-weight: bold;
-        }
-
-        .modal {
-            display: none;
+<!DOCTYPE html>  
+<html lang="tr">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>Starr Inc. - API</title>  
+    <link rel="icon" href="" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">  
+    <style>  
+        :root {  
+            --primary-color: #6a11cb;  
+            --secondary-color: #2575fc;  
+            --background-color: #121212;  
+            --card-background: #1e1e1e;  
+            --text-color: #ffffff;  
+        }  
+        body {  
+            font-family: 'Poppins', sans-serif;  
+            margin: 0;  
+            padding: 0;  
+            background-color: var(--background-color);  
+            color: var(--text-color);  
+            transition: all 0.3s ease;  
+        }  
+        header, footer {  
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));  
+            color: white;  
+            text-align: center;  
+            padding: 2rem;  
+            position: relative;  
+            overflow: hidden;  
+        }  
+        header::before, footer::before {  
+            content: '';  
+            position: absolute;  
+            top: -50%;  
+            left: -50%;  
+            width: 200%;  
+            height: 200%;  
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 80%);  
+            animation: ripple 15s linear infinite;  
+        }  
+        @keyframes ripple {  
+            0% { transform: rotate(0deg); }  
+            100% { transform: rotate(360deg); }  
+        }  
+        .container {  
+            max-width: 1000px;  
+            margin: 2rem auto;  
+            padding: 0 2rem;  
+        }  
+        .api-card {  
+            background-color: var(--card-background);  
+            border-radius: 12px;  
+            padding: 1.5rem;  
+            margin-bottom: 1.5rem;  
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);  
+            transition: all 0.3s ease;  
+        }  
+        .api-card:hover {  
+            transform: translateY(-5px);  
+            box-shadow: 0 12px 20px rgba(0,0,0,0.3);  
+        }  
+        .api-title {  
+            font-size: 1.4rem;  
+            margin-bottom: 0.8rem;  
+            color: var(--secondary-color);  
+        }  
+        .api-description {  
+            margin-bottom: 1rem;  
+            line-height: 1.6;  
+        }  
+        .btn {  
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));  
+            color: white;  
+            border: none;  
+            padding: 0.8rem 1.5rem;  
+            border-radius: 30px;  
+            cursor: pointer;  
+            transition: all 0.3s ease;  
+            font-weight: bold;  
+            text-transform: uppercase;  
+            letter-spacing: 1px;  
+        }  
+        .btn:hover {  
+            transform: scale(1.05);  
+            box-shadow: 0 0 20px rgba(37, 117, 252, 0.7);  
+        }  
+        .delete-btn {  
+            background: linear-gradient(135deg, #ff3860, #ff0844);  
+            margin-left: 1rem;  
+        }  
+        .delete-btn:hover {  
+            box-shadow: 0 0 20px rgba(255, 56, 96, 0.7);  
+        }  
+        #loader {  
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
+                      top: 0;  
+            left: 0;  
+            width: 100%;  
+            height: 100%;  
+            background-color: rgba(0, 0, 0, 0.8);  
+            display: flex;  
+            justify-content: center;  
+            align-items: center;  
+            z-index: 9999;  
+        }  
+        .progress {  
+            width: 0;  
+            height: 5px;  
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));  
+            transition: width 0.2s ease;  
+        }  
+        #apiForm {  
+            background-color: var(--card-background);  
+            padding: 2rem;  
+            border-radius: 12px;  
+            margin-bottom: 2rem;  
+            display: none;  
+        }  
+        #apiForm h2 {  
+            margin-top: 0;  
+            color: var(--secondary-color);  
+        }  
+        input, textarea {  
+            width: 100%;  
+            padding: 0.8rem;  
+            margin-bottom: 1rem;  
+            border: none;  
+            border-radius: 5px;  
+            background-color: rgba(255, 255, 255, 0.1);  
+            color: var(--text-color);  
+        }  
+        input:focus, textarea:focus {  
+            outline: none;  
+            box-shadow: 0 0 0 2px var(--secondary-color);  
+        }  
+        #adminPanelBtn {  
+            position: absolute;  
+            top: 1rem;  
+            right: 1rem;  
+        }  
+    </style>  
+</head>  
+<body>  
+    <div id="loader">  
+        <div class="progress"></div>  
+    </div>  
 
-        .modal-content {
-            background: #282828;
-            padding: 20px;
-            border-radius: 5px;
-            width: 300px;
-            text-align: center;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-        }
+    <header>  
+        <h1>Starr Inc. - API</h1>  
+        <button id="adminPanelBtn" class="btn">Admin Paneli</button>  
+    </header>  
 
-        .modal-content input {
-            width: 80%;
-            margin: 5px 0;
-        }
+    <div class="container">  
+        <div id="apiForm">  
+            <h2>Yeni API Ekle</h2>  
+            <input type="text" id="apiName" placeholder="API Adı" required>  
+            <textarea id="apiDescription" placeholder="API Açıklaması" required></textarea>  
+            <input type="url" id="apiUrl" placeholder="API URL" required>  
+            <button id="submitApiBtn" class="btn">Ekle</button>  
+        </div>  
 
-        footer {
-            text-align: center;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-        }
+        <div id="apiList"></div>  
+    </div>  
 
-        footer p {
-            margin: 0;
-            color: #ccc;
-        }
+    <footer>  
+        <p>&copy; 2024 - Starr Inc. - Tüm hakları saklıdır.</p>  
+    </footer>  
 
-        .loading-bar {
-            width: 100%;
-            height: 5px;
-            background: rgba(255, 255, 255, 0.1);
-            position: fixed;
-            top: 0;
-        }
+    <script>  
+        const adminPanelBtn = document.getElementById('adminPanelBtn');  
+        const apiForm = document.getElementById('apiForm');  
+        const apiList = document.getElementById('apiList');  
+        const submitApiBtn = document.getElementById('submitApiBtn');  
+        const loader = document.getElementById('loader');  
+        const progress = document.querySelector('.progress');  
 
-        .progress {
-            height: 100%;
-            width: 0;
-            background: linear-gradient(90deg, rgba(29, 185, 245, 1), rgba(255, 60, 144, 1));
-            animation: loading 2s linear infinite;
-        }
+        let isAdmin = false;  
 
-        @keyframes loading {
-            0% { width: 0; }
-            50% { width: 100%; }
-            100% { width: 0; }
-        }
+        function showLoader() {  
+            loader.style.display = 'flex';  
+            simulateLoading();  
+        }  
 
-        .neon-text {
-            font-size: 20px;
-            color: #00ffcc;
-            text-shadow: 0 0 5px #00ffcc, 0 0 10px #00ffcc, 0 0 15px #00ffcc;
-        }
-    </style>
-</head>
+        function hideLoader() {  
+            loader.style.display = 'none';  
+            progress.style.width = '0%';  
+        }  
 
-<body>
-    <div class="loading-bar">
-        <div class="progress"></div>
-    </div>
+        function simulateLoading() {  
+            let width = 0;  
+            const interval = setInterval(() => {  
+                if (width >= 100) {  
+                    clearInterval(interval);  
+                    hideLoader();  
+                } else {  
+                    width += 10;  
+                    progress.style.width = width + '%';  
+                }  
+            }, 200);  
+        }  
 
-    <header>
-        <h1 class="neon-text">Starr Inc. - API</h1>
-        <button class="btn" id="adminPanelBtn">Admin Paneli</button>
-    </header>
+        function loadAPIs() {  
+            showLoader();  
+            apiList.innerHTML = '<h2></h2>';  
+            const apiListData = JSON.parse(localStorage.getItem('apiList')) || [];  
 
-    <div class="container">
-        <div class="api-list" id="apiList">
-            <h2>API List:</h2>
-        </div>
+            apiListData.forEach((api, index) => {  
+                const apiCard = document.createElement('div');  
+                apiCard.className = 'api-card';  
+                apiCard.innerHTML = `  
+                    <h3 class="api-title">${api.name}</h3>  
+                    <p class="api-description">${api.description}</p>  
+                    <button class="btn" onclick="openApiUrl('${api.url}')">API'ye Git</button>  
+                    ${isAdmin ? `<button class="btn delete-btn" onclick="deleteAPI(${index})">Sil</button>` : ''}  
+                `;  
+                apiList.appendChild(apiCard);  
+            });  
+        }  
 
-        <div class="api-form" id="apiForm">
-            <h3>API Ekle</h3>
-            <input type="text" id="apiName" placeholder="API Adı" required>
-            <textarea id="apiDescription" placeholder="API Açıklaması" required></textarea>
-            <input type="text" id="apiUrl" placeholder="API URL'si" required>
-            <button class="btn" id="submitApiBtn">Ekle</button>
-        </div>
-    </div>
+        function openApiUrl(url) {  
+            window.open(url, '_blank');  
+        }  
 
-    <div class="modal" id="loginModal">
-        <div class="modal-content">
-            <h3 class="neon-text">Admin Girişi</h3>
-            <input type="text" id="adminUsername" placeholder="Kullanıcı Adı" required>
-            <input type="password" id="adminPassword" placeholder="Şifre" required>
-            <button class="btn" id="submitLoginBtn">Giriş Yap</button>
-            <button class="btn" id="closeModalBtn">Kapat</button>
-        </div>
-    </div>
+        function deleteAPI(index) {  
+            const apiListData = JSON.parse(localStorage.getItem('apiList')) || [];  
+            apiListData.splice(index, 1);  
+            localStorage.setItem('apiList', JSON.stringify(apiListData));  
+            loadAPIs();  
+        }  
 
-    <footer>
-        <p>&copy; 2024 - Starr Inc.</p>
-    </footer>
+        adminPanelBtn.addEventListener('click', () => {  
+            const password = prompt("Admin şifresini girin:");  
+            if (password === "starr0001") {  
+                isAdmin = true;  
+                apiForm.style.display = 'block';  
+                adminPanelBtn.style.display = 'none';  
+                loadAPIs();  
+            } else {  
+                alert("Yanlış şifre!");  
+            }  
+        });  
+      
+        submitApiBtn.addEventListener('click', () => {  
+            const apiName = document.getElementById('apiName').value;  
+            const apiDescription = document.getElementById('apiDescription').value;  
+            const apiUrl = document.getElementById('apiUrl').value;  
 
-    <script>
-        const adminPanelBtn = document.getElementById('adminPanelBtn');
-        const loginModal = document.getElementById('loginModal');
-        const closeModalBtn = document.getElementById('closeModalBtn');
-        const submitLoginBtn = document.getElementById('submitLoginBtn');
-        const apiForm = document.getElementById('apiForm');
-        const apiList = document.getElementById('apiList');
+            if (apiName && apiDescription && apiUrl) {  
+                const apiListData = JSON.parse(localStorage.getItem('apiList')) || [];  
+                apiListData.push({ name: apiName, description: apiDescription, url: apiUrl });  
+                localStorage.setItem('apiList', JSON.stringify(apiListData));  
+                
+                document.getElementById('apiName').value = '';  
+                document.getElementById('apiDescription').value = '';  
+                document.getElementById('apiUrl').value = '';  
+                
+                loadAPIs();  
+            } else {  
+                alert("Lütfen tüm alanları doldurun!");  
+            }  
+        });  
 
-        let isAdmin = false; // Admin kontrol değişkeni
-
-        // Giriş Modal'ını Açma
-        adminPanelBtn.addEventListener('click', () => {
-            loginModal.style.display = 'flex';
-        });
-
-        closeModalBtn.addEventListener('click', () => {
-            loginModal.style.display = 'none';
-        });
-
-        // Giriş Kontrolü
-        submitLoginBtn.addEventListener('click', () => {
-            const username = document.getElementById('adminUsername').value;
-            const password = document.getElementById('adminPassword').value;
-
-            // Basit bir kullanıcı kontrolü
-            if (username === '1' && password === '1') {
-                isAdmin = true;
-                alert('Giriş başarılı!');
-                loginModal.style.display = 'none';
-                apiForm.style.display = 'block'; // Admin girişi başarılı ise formu göster
-                loadAPIs(); // Sayfa yüklendiğinde API'leri yükle
-            } else {
-                alert('Hatalı kullanıcı adı veya şifre!');
-            }
-        });
-
-        // API ekleme işlemi
-        document.getElementById('submitApiBtn').addEventListener('click', () => {
-            const name = document.getElementById('apiName').value;
-            const description = document.getElementById('apiDescription').value;
-            const url = document.getElementById('apiUrl').value;
-
-            const apiCard = document.createElement('div');
-            apiCard.classList.add('api-card');
-            apiCard.innerHTML = `<span class="api-title">${name}</span><p>${description}</p><a href="${url}" target="_blank" class="btn">API'yi İncele</a>`;
-            apiList.appendChild(apiCard);
-            clearForm();
-        });
-
-        // API formunu temizleme
-        function clearForm() {
-            document.getElementById('apiName').value = '';
-            document.getElementById('apiDescription').value = '';
-            document.getElementById('apiUrl').value = '';
-        }
-
-        // API'leri yükleme (simülasyon)
-        function loadAPIs() {
-            const dummyAPIs = [
-                { name: "Örnek API 1", description: "Bu, örnek bir API'dir.", url: "https://example.com/api1" },
-                { name: "Örnek API 2", description: "Bu, başka bir örnek API'dir.", url: "https://example.com/api2" }
-            ];
-
-            dummyAPIs.forEach(api => {
-                const apiCard = document.createElement('div');
-                apiCard.classList.add('api-card');
-                apiCard.innerHTML = `<span class="api-title">${api.name}</span><p>${api.description}</p><a href="${api.url}" target="_blank" class="btn">API'yi İncele</a>`;
-                apiList.appendChild(apiCard);
-            });
-        }
-
-        // Yüklenme çubuğunu göster
-        window.onload = function() {
-            const loadingBar = document.querySelector('.loading-bar');
-            loadingBar.style.display = 'block';
-        };
-    </script>
-</body>
-
+        window.addEventListener('load', () => {  
+            showLoader();  
+            setTimeout(loadAPIs, 2000); // Simüle edilmiş yükleme süresi  
+        });  
+    </script>  
+</body>  
 </html>
