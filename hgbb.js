@@ -7,6 +7,16 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());  
 
+async function isImageURL(url) {
+    try {
+        const response = await fetch(url);
+        const contentType = response.headers.get('content-type');
+        return response.ok && contentType && contentType.startsWith('image/');
+    } catch (error) {
+        return false;
+    }
+}
+
 async function createWelcomeImage(username, action, avatarURL, memberCount) {  
     const canvas = createCanvas(800, 250);  
     const ctx = canvas.getContext('2d');  
@@ -27,7 +37,11 @@ async function createWelcomeImage(username, action, avatarURL, memberCount) {
     ctx.arc(700, 200, 60, 0, Math.PI * 2);  
     ctx.fill();  
 
-    // Avatar
+    // Avatar kontrolü ve yüklemesi
+    const isValidImage = await isImageURL(avatarURL);
+    if (!isValidImage) {
+        throw new Error('Geçersiz avatar URL\'si. Lütfen bir resim URL\'si sağlayın.');
+    }
     const avatar = await loadImage(avatarURL);  
     ctx.save();  
     ctx.beginPath();  
@@ -43,26 +57,19 @@ async function createWelcomeImage(username, action, avatarURL, memberCount) {
     ctx.textAlign = 'center';  
     ctx.fillText(action === 'join' ? `Hoşgeldin ${username}!` : `Görüşmek üzere ${username}!`, 400, 180);  
 
-    // Üye sayısı metni
+    // Üye numarası
     ctx.font = '20px Arial';  
     ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';  
-    if (action === 'join') {
-        ctx.fillText(`${memberCount} üye olduk!`, 400, 220);  
-    } else {
-        ctx.fillText(`${memberCount} üye kaldı!`, 400, 220);  
-    }
+    ctx.fillText(action === 'join' ? `${memberCount} üye olduk!` : `${memberCount} üye kaldı!`, 400, 220);  
 
     return canvas.toBuffer('image/png');  
 }  
 
 app.get('/hgbb', async (req, res) => {  
-    const { username, action, memberCount } = req.query;  
-    if (!username || !action || !memberCount) {  
-        return res.status(400).json({ error: 'Username, action ve memberCount gerekli' });  
+    const { username, action, memberCount, avatarURL } = req.query;  
+    if (!username || !action || !memberCount || !avatarURL) {  
+        return res.status(400).json({ error: 'Username, action, memberCount ve avatarURL gerekli' });  
     }  
-
-    // Örnek bir avatar URL'si (gerçek uygulamada Discord API'den alınabilir)  
-    const avatarURL = 'https://cdn.discordapp.com/embed/avatars/0.png';  
 
     try {  
         const buffer = await createWelcomeImage(username, action, avatarURL, memberCount);  
@@ -70,7 +77,7 @@ app.get('/hgbb', async (req, res) => {
         res.send(buffer);  
     } catch (error) {  
         console.error('Resim oluşturma hatası:', error);  
-        res.status(500).send('Resim oluşturulurken bir hata oluştu');  
+        res.status(500).json({ error: error.message });  
     }  
 });  
 
