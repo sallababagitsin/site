@@ -1,7 +1,11 @@
 const express = require('express');  
 const { createCanvas, loadImage } = require('canvas');  
+const fetch = require('node-fetch');  
 
 const app = express();  
+const PORT = process.env.PORT || 3000;  
+
+app.use(express.json());  
 
 async function createWelcomeImage(username, action, memberCount, avatarUrl) {  
     const canvas = createCanvas(800, 400);  
@@ -53,8 +57,16 @@ app.get('/hgbb', async (req, res) => {
         return res.status(400).json({ error: 'Username, action ve avatarUrl zorunlu parametrelerdir.' });  
     }  
 
-    try {  
-        const buffer = await createWelcomeImage(username, action, memberCount, avatarUrl);  
+    // Burada başka bir API'den veri alabiliriz
+    try {
+        const response = await fetch('https://starrap.glitch.me/hgbb'); // Burada doğru API URL'sini yerleştirin
+        const data = await response.json();
+
+        // API'den alınan verilerden avatarUrl ve memberCount'u kullanabilirsiniz
+        const avatar = data.avatarUrl || avatarUrl; // Eğer API'den avatarURL yoksa, query'den alın
+        const count = data.memberCount || memberCount; // Eğer API'den memberCount yoksa, query'den alın
+
+        const buffer = await createWelcomeImage(username, action, count, avatar);  
         res.contentType('image/png');  
         res.send(buffer);  
     } catch (error) {  
@@ -63,4 +75,6 @@ app.get('/hgbb', async (req, res) => {
     }  
 });  
 
-module.exports = app;
+app.listen(PORT, () => {  
+    console.log(`Server çalışıyor: http://localhost:${PORT}`);  
+});  
