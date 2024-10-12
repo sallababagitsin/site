@@ -96,7 +96,7 @@
             font-weight: bold;  
             cursor: pointer;  
         }  
-        .close:hover {  
+        .close:hover { 
             color: #000;  
         }  
         .parameter-list {  
@@ -225,109 +225,47 @@
             }  
         }  
 
-        function openApiDetails(index) {  
-            fetch(`/api/apis/${index}`)  
-                .then(response => response.json())  
-                .then(api => {  
-                    modalApiName.textContent = api.name;  
-                    modalApiDescription.textContent = api.description;  
-                    modalParameterList.innerHTML = '';  
-                    api.parameters.forEach(param => {  
-                        const li = document.createElement('li');  
-                        li.textContent = `${param.name}: ${param.description}`;  
-                        modalParameterList.appendChild(li);  
-                    });  
-                    modalGoToApiBtn.onclick = () => window.open(api.url, '_blank');  
-                    modal.style.display = 'block';  
-                });  
-        }  
-
-        async function deleteAPI(index) {  
-            if (confirm('Bu API'yi silmek istediğinizden emin misiniz?')) {  
-                showLoader();  
-                try {  
-                    await fetch(`/api/apis/${index}`, { method: 'DELETE' });  
-                    loadAPIs();  
-                } catch (error) {  
-                    console.error('API silinirken hata oluştu:', error);  
-                } finally {  
-                    hideLoader();  
-                }  
-            }  
-        }  
-
-        adminPanelBtn.addEventListener('click', () => {  
-            const password = prompt("Admin şifresini girin:");  
-            if (password === "starradmin") {  
-                isAdmin = true;  
-                apiForm.style.display = 'block';  
-                adminPanelBtn.style.display = 'none';  
-                loadAPIs();  
-            } else {  
-                alert("Yanlış şifre!");  
-            }  
+        document.addEventListener('DOMContentLoaded', function() {  
+            hideLoader();  
+            loadAPIs();  
         });  
 
-        addParameterBtn.addEventListener('click', () => {  
-            parameterCount++;  
-            const paramDiv = document.createElement('div');  
-            paramDiv.innerHTML = `  
-                <input type="text" id="paramName${parameterCount}" placeholder="Parametre Adı" required>  
-                <input type="text" id="paramDescription${parameterCount}" placeholder="Parametre Açıklaması" required>  
-            `;  
-            parameterInputs.appendChild(paramDiv);  
+        adminPanelBtn.addEventListener('click', function() {  
+            isAdmin = !isAdmin;  
+            apiForm.style.display = isAdmin ? 'block' : 'none';  
+            loadAPIs();  
         });  
 
-        submitApiBtn.addEventListener('click', async () => {  
-            const name = document.getElementById('apiName').value;  
-            const description = document.getElementById('apiDescription').value;  
-            const url = document.getElementById('apiUrl').value;  
-            const parameters = [];  
-
-            for (let i = 1; i <= parameterCount; i++) {  
-                const paramName = document.getElementById(`paramName${i}`).value;  
-                const paramDescription = document.getElementById(`paramDescription${i}`).value;  
-                if (paramName && paramDescription) {  
-                    parameters.push({ name: paramName, description: paramDescription });  
-                }  
-            }  
-
-            if (name && description && url) {  
-                showLoader();  
-                try {  
-                    await fetch('/api/apis', {  
-                        method: 'POST',  
-                        headers: { 'Content-Type': 'application/json' },  
-                        body: JSON.stringify({ name, description, url, parameters })  
-                    });  
-                    loadAPIs();  
-                    // Form alanlarını temizle  
-                    document.getElementById('apiName').value = '';  
-                    document.getElementById('apiDescription').value = '';  
-                    document.getElementById('apiUrl').value = '';  
-                    parameterInputs.innerHTML = '';  
-                    parameterCount = 0;  
-                } catch (error) {  
-                    console.error('API eklenirken hata oluştu:', error);  
-                } finally {  
-                    hideLoader();  
-                }  
-            } else {  
-                alert("Lütfen tüm gerekli alanları doldurun.");  
-            }  
+        addParameterBtn.addEventListener('click', function() {  
+            const parameterInput = document.createElement('input');  
+            parameterInput.type = 'text';  
+            parameterInput.placeholder = `Parametre ${++parameterCount}`;  
+            parameterInputs.appendChild(parameterInput);  
         });  
 
-        closeModal.onclick = () => {  
+        closeModal.onclick = function() {  
             modal.style.display = 'none';  
-        }  
+        };  
 
-        window.onclick = (event) => {  
-            if (event.target == modal) {  
+        window.onclick = function(event) {  
+            if (event.target === modal) {  
                 modal.style.display = 'none';  
             }  
-        }  
+        };  
 
-        window.onload = loadAPIs;  
+        function openApiDetails(index) {  
+            modalApiName.textContent = apiListData[index].name;  
+            modalApiDescription.textContent = apiListData[index].description;  
+            modalParameterList.innerHTML = '';  
+            
+            apiListData[index].parameters.forEach(param => {  
+                const li = document.createElement('li');  
+                li.textContent = param;  
+                modalParameterList.appendChild(li);  
+            });  
+
+            modal.style.display = 'block';  
+        }  
     </script>  
 </body>  
 </html>
