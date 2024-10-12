@@ -1,11 +1,7 @@
 const express = require('express');  
 const { createCanvas, loadImage } = require('canvas');  
-const fetch = require('node-fetch');  
 
 const app = express();  
-const PORT = process.env.PORT || 3000;  
-
-app.use(express.json());  
 
 async function createWelcomeImage(username, action, memberCount, avatarUrl) {  
     const canvas = createCanvas(800, 400);  
@@ -67,6 +63,4 @@ app.get('/hgbb', async (req, res) => {
     }  
 });  
 
-app.listen(PORT, () => {  
-    console.log(`Server çalışıyor: http://localhost:${PORT}`);  
-});
+module.exports = app;
