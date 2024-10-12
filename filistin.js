@@ -1,5 +1,7 @@
 const express = require('express');  
 const { createCanvas, loadImage } = require('canvas');  
+const sharp = require('sharp');  
+const fetch = require('node-fetch');  
 
 const app = express();  
 const PORT = 3000;  
@@ -16,12 +18,22 @@ app.get('/palestine', async (req, res) => {
     }  
 
     try {  
-        // Resimleri yükle  
-        const [palestineImage, avatarImage] = await Promise.all([  
-            loadImage(palestineImageUrl),  
-            loadImage(avatar)  
-        ]);  
+        // Avatar resmini yükle  
+        const response = await fetch(avatar);  
+        if (!response.ok) {  
+            throw new Error(`Avatar resmi yükleme hatası: ${response.statusText}`);  
+        }  
+        
+        // Resmi 'sharp' ile PNG formatına çevir  
+        const avatarBuffer = await response.buffer();  
+        const avatarImageBuffer = await sharp(avatarBuffer)  
+            .resize(100, 100) // Boyutu 100x100 piksel olarak ayarla  
+            .toFormat('png')  
+            .toBuffer();  
 
+        // Filistin resmini yükle  
+        const palestineImage = await loadImage(palestineImageUrl);  
+        
         // Resim boyutları  
         const canvas = createCanvas(palestineImage.width, palestineImage.height);  
         const ctx = canvas.getContext('2d');  
@@ -30,10 +42,10 @@ app.get('/palestine', async (req, res) => {
         ctx.drawImage(palestineImage, 0, 0, canvas.width, canvas.height);  
 
         // Avatar resmini çizin  
-        const profileImageSize = 100; // Avatar boyutu  
-        const xPosition = canvas.width / 2 - profileImageSize / 2; // Ortalayın  
-        const yPosition = canvas.height / 2 - profileImageSize / 2; // Ortalayın  
-        ctx.drawImage(avatarImage, xPosition, yPosition, profileImageSize, profileImageSize);  
+        const avatarImage = await loadImage(avatarImageBuffer);  
+        const xPosition = canvas.width / 2 - 50; // Ortalayın  
+        const yPosition = canvas.height / 2 - 50; // Ortalayın  
+        ctx.drawImage(avatarImage, xPosition, yPosition, 100, 100);  
 
         // Resmi yanıtla  
         res.set('Content-Type', 'image/png');  
