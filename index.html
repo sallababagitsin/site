@@ -1,369 +1,266 @@
-<!DOCTYPE html>  
-<html lang="tr">  
-<head>  
-    <meta charset="UTF-8">  
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
-    <title>Starr Inc. - API Yönetim Sistemi</title>  
-    <link rel="icon" href="https://example.com/favicon.ico" type="image/x-icon">  
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">  
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">  
-    <style>  
-        :root {  
-            --primary-color: #4a90e2;  
-            --secondary-color: #50c878;  
-            --background-color: #f4f7f9;  
-            --card-background: #ffffff;  
-            --text-color: #333333;  
-            --border-radius: 10px;  
-            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);  
-            --transition: all 0.3s ease;  
-        }  
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Starr Inc. - API</title>
+    <link rel="icon" href="" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6a11cb;
+            --secondary-color: #2575fc;
+            --background-color: #121212;
+            --card-background: #1e1e1e;
+            --text-color: #ffffff;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+        header, footer {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        header::before, footer::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 80%);
+            animation: ripple 15s linear infinite;
+        }
+        @keyframes ripple {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        .api-card {
+            background-color: var(--card-background);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        .api-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0,0,0,0.3);
+        }
+        .api-title {
+            font-size: 1.4rem;
+            margin-bottom: 0.8rem;
+            color: var(--secondary-color);
+        }
+        .api-description {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+        .btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(37, 117, 252, 0.7);
+        }
+        .delete-btn {
+            background: linear-gradient(135deg, #ff3860, #ff0844);
+            margin-left: 1rem;
+        }
+        .delete-btn:hover {
+            box-shadow: 0 0 20px rgba(255, 56, 96, 0.7);
+        }
+        #loader {
+            position: fixed;
+                      top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .progress {
+            width: 0;
+            height: 5px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            transition: width 0.2s ease;
+        }
+        #apiForm {
+            background-color: var(--card-background);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            display: none;
+        }
+        #apiForm h2 {
+            margin-top: 0;
+            color: var(--secondary-color);
+        }
+        input, textarea {
+            width: 100%;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border: none;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--secondary-color);
+        }
+        #adminPanelBtn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div id="loader">
+        <div class="progress"></div>
+    </div>
 
-        * {  
-            margin: 0;  
-            padding: 0;  
-            box-sizing: border-box;  
-        }  
+    <header>
+        <h1>Starr Inc. - API Hizmetleri</h1>
+        <button id="adminPanelBtn" class="btn">Admin Paneli</button>
+    </header>
 
-        body {  
-            font-family: 'Poppins', sans-serif;  
-            background-color: var(--background-color);  
-            color: var(--text-color);  
-            line-height: 1.6;  
-        }  
+    <div class="container">
+        <div id="apiForm">
+            <h2>Yeni API Ekle</h2>
+            <input type="text" id="apiName" placeholder="API Adı" required>
+            <textarea id="apiDescription" placeholder="API Açıklaması" required></textarea>
+            <input type="url" id="apiUrl" placeholder="API URL" required>
+            <button id="submitApiBtn" class="btn">Ekle</button>
+        </div>
 
-        .container {  
-            max-width: 1200px;  
-            margin: 0 auto;  
-            padding: 0 20px;  
-        }  
+        <div id="apiList"></div>
+    </div>
 
-        header {  
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));  
-            color: #ffffff;  
-            padding: 20px 0;  
-            box-shadow: var(--box-shadow);  
-        }  
+    <footer>
+        <p>&copy; 2024 - Starr Inc. - Tüm hakları saklıdır.</p>
+    </footer>
 
-        nav {  
-            display: flex;  
-            justify-content: space-between;  
-            align-items: center;  
-        }  
+    <script>
+        const adminPanelBtn = document.getElementById('adminPanelBtn');
+        const apiForm = document.getElementById('apiForm');
+        const apiList = document.getElementById('apiList');
+        const submitApiBtn = document.getElementById('submitApiBtn');
+        const loader = document.getElementById('loader');
+        const progress = document.querySelector('.progress');
 
-        .logo {  
-            font-size: 24px;  
-            font-weight: 700;  
-        }  
+        let isAdmin = false;
 
-        .nav-links {  
-            display: flex;  
-            list-style: none;  
-        }  
+        function showLoader() {
+            loader.style.display = 'flex';
+            simulateLoading();
+        }
 
-        .nav-links li {  
-            margin-left: 20px;  
-        }  
+        function hideLoader() {
+            loader.style.display = 'none';
+            progress.style.width = '0%';
+        }
 
-        .nav-links a {  
-            color: #ffffff;  
-            text-decoration: none;  
-            font-weight: 600;  
-            transition: var(--transition);  
-        }  
+        function simulateLoading() {
+            let width = 0;
+            const interval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(interval);
+                    hideLoader();
+                } else {
+                    width += 10;
+                    progress.style.width = width + '%';
+                }
+            }, 200);
+        }
 
-        .nav-links a:hover {  
-            opacity: 0.8;  
-        }  
+        async function loadAPIs() {
+            showLoader();
+            apiList.innerHTML = '<h2></h2>';
+            
+            const response = await fetch('/api/apis');  // Backend'deki api.json verilerini çek
+            const apiListData = await response.json();
 
-        .settings-btn {  
-            position: fixed;  
-            top: 20px;  
-            right: 20px;  
-            background-color: var(--primary-color);  
-            border: none;  
-            color: #fff;  
-            border-radius: 50%;  
-            width: 50px;  
-            height: 50px;  
-            cursor: pointer;  
-            display: flex;  
-            align-items: center;  
-            justify-content: center;  
-            box-shadow: var(--box-shadow);  
-            transition: var(--transition);  
-        }  
+            apiListData.forEach((api, index) => {
+                const apiCard = document.createElement('div');
+                apiCard.className = 'api-card';
+                apiCard.innerHTML = `
+                    <h3 class="api-title">${api.name}</h3>
+                    <p class="api-description">${api.description}</p>
+                    <button class="btn" onclick="openApiUrl('${api.url}')">API'ye Git</button>
+                    ${isAdmin ? `<button class="btn delete-btn" onclick="deleteAPI(${index})">Sil</button>` : ''}
+                `;
+                apiList.appendChild(apiCard);
+            });
+        }
 
-        .settings-btn:hover {  
-            background-color: var(--secondary-color);  
-        }  
+        function openApiUrl(url) {
+            window.open(url, '_blank');
+        }
 
-        .settings-menu {  
-            display: none;  
-            position: absolute;  
-            top: 70px;  
-            right: 20px;  
-            background-color: var(--card-background);  
-            border-radius: var(--border-radius);  
-            box-shadow: var(--box-shadow);  
-            padding: 20px;  
-            width: 250px;  
-        }  
+        async function deleteAPI(index) {
+            await fetch(`/api/apis/${index}`, { method: 'DELETE' });
+            loadAPIs();
+        }
 
-        .settings-menu h3 {  
-            margin-bottom: 10px;  
-            font-size: 18px;  
-            color: var(--primary-color);  
-        }  
+        adminPanelBtn.addEventListener('click', () => {
+            const password = prompt("Admin şifresini girin:");
+            if (password === "starradmin") {
+                isAdmin = true;
+                apiForm.style.display = 'block';
+                adminPanelBtn.style.display = 'none';
+                loadAPIs();
+            } else {
+                alert("Yanlış şifre!");
+            }
+        });
 
-        .settings-menu label {  
-            font-size: 14px;  
-            margin-right: 10px;  
-        }  
+        submitApiBtn.addEventListener('click', async () => {
+            const name = document.getElementById('apiName').value;
+            const description = document.getElementById('apiDescription').value;
+            const url = document.getElementById('apiUrl').value;
 
-        .settings-menu select {  
-            width: 100%;  
-            padding: 10px;  
-            border-radius: 5px;  
-            border: 1px solid #ddd;  
-            margin-bottom: 10px;  
-        }  
+            if (name && description && url) {
+                await fetch('/api/apis', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, description, url })
+                });
 
-        .settings-menu button {  
-            width: 100%;  
-            padding: 10px;  
-            border-radius: 5px;  
-            border: none;  
-            background-color: var(--primary-color);  
-            color: #fff;  
-            cursor: pointer;  
-            transition: var(--transition);  
-        }  
+                loadAPIs();
+            } else {
+                alert("Lütfen tüm alanları doldurun.");
+            }
+        });
 
-        .settings-menu button:hover {  
-            background-color: var(--secondary-color);  
-        }  
-
-        main {  
-            padding: 40px 0;  
-        }  
-
-        .section-title {  
-            font-size: 28px;  
-            margin-bottom: 20px;  
-            color: var(--primary-color);  
-        }  
-
-        .api-list {  
-            display: grid;  
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));  
-            gap: 20px;  
-        }  
-
-        .api-card {  
-            background-color: var(--card-background);  
-            border-radius: var(--border-radius);  
-            padding: 20px;  
-            box-shadow: var(--box-shadow);  
-            transition: var(--transition);  
-        }  
-
-        .api-card:hover {  
-            transform: translateY(-5px);  
-        }  
-
-        .api-card h3 {  
-            font-size: 18px;  
-            margin-bottom: 10px;  
-            color: var(--primary-color);  
-        }  
-
-        .api-card p {  
-            font-size: 14px;  
-            color: #666;  
-            margin-bottom: 15px;  
-        }  
-
-        .btn {  
-            display: inline-block;  
-            padding: 10px 20px;  
-            background-color: var(--primary-color);  
-            color: #ffffff;  
-            border: none;  
-            border-radius: 5px;  
-            cursor: pointer;  
-            transition: var(--transition);  
-            text-decoration: none;  
-            font-size: 14px;  
-            font-weight: 600;  
-        }  
-
-        .btn:hover {  
-            background-color: var(--secondary-color);  
-        }  
-
-        .delete-btn {  
-            background-color: #e74c3c;  
-            margin-left: 10px;  
-        }  
-
-        .delete-btn:hover {  
-            background-color: #c0392b;  
-        }  
-
-        #apiForm {  
-            background-color: var(--card-background);  
-            border-radius: var(--border-radius);  
-            padding: 20px;  
-            margin-bottom: 40px;  
-            box-shadow: var(--box-shadow);  
-        }  
-
-        #apiForm h2 {  
-            margin-bottom: 20px;  
-            color: var(--primary-color);  
-        }  
-
-        input, textarea {  
-            width: 100%;  
-            padding: 10px;  
-            margin-bottom: 15px;  
-            border: 1px solid #ddd;  
-            border-radius: 5px;  
-            font-size: 14px;  
-        }  
-
-        textarea {  
-            height: 100px;  
-            resize: vertical;  
-        }  
-
-        #loader {  
-            position: fixed;  
-            top: 0;  
-            left: 0;  
-            width: 100%;  
-            height: 100%;  
-            background-color: rgba(255, 255, 255, 0.8);  
-            display: flex;  
-            justify-content: center;  
-            align-items: center;  
-            z-index: 9999;  
-        }  
-
-        .spinner {  
-            width: 50px;  
-            height: 50px;  
-            border: 5px solid var(--primary-color);  
-            border-top: 5px solid var(--secondary-color);  
-            border-radius: 50%;  
-            animation: spin 1s linear infinite;  
-        }  
-
-        @keyframes spin {  
-            0% { transform: rotate(0deg); }  
-            100% { transform: rotate(360deg); }  
-        }  
-
-        footer {  
-            background-color: #333;  
-            color: #fff;  
-            text-align: center;  
-            padding: 20px 0;  
-            margin-top: 40px;  
-        }  
-    </style>  
-</head>  
-<body>  
-    <div id="loader" style="display: none;">  
-        <div class="spinner"></div>  
-    </div>  
-
-    <header>  
-        <nav class="container">  
-            <div class="logo">Starr Inc.</div>  
-            <ul class="nav-links">  
-                <li><a href="#" id="adminPanelBtn">Admin Paneli</a></li>  
-            </ul>  
-        </nav>  
-    </header>  
-
-    <button class="settings-btn" id="settingsBtn"><i class="fas fa-cog"></i></button>  
-
-    <div class="settings-menu" id="settingsMenu">  
-        <h3>Ayarlar</h3>  
-        <label for="language"><i class="fas fa-globe"></i> Dil Seçimi</label>  
-        <select id="language">  
-            <option value="tr">Türkçe</option>  
-            <option value="en">İngilizce</option>  
-        </select>  
-        <label for="theme"><i class="fas fa-palette"></i> Tema Seçimi</label>  
-        <select id="theme">  
-            <option value="light">Açık Tema</option>  
-            <option value="dark">Koyu Tema</option>  
-        </select>  
-        <button id="saveSettingsBtn">Ayarları Kaydet</button>  
-    </div>  
-
-    <main class="container">  
-        <h1 class="section-title">API Yönetim Sistemi</h1>  
-        <section id="apiList" class="api-list">  
-            <!-- API Card Şablonu -->  
-        </section>  
-
-        <form id="apiForm">  
-            <h2>API Ekle</h2>  
-            <input type="text" id="apiName" placeholder="API Adı" required>  
-            <textarea id="apiDescription" placeholder="API Açıklaması" required></textarea>  
-            <input type="text" id="apiLink" placeholder="API Bağlantısı" required>  
-            <button type="submit" class="btn">Ekle</button>  
-        </form>  
-    </main>  
-
-    <footer>  
-        <p>&copy; 2024 Starr Inc. Tüm hakları saklıdır.</p>  
-    </footer>  
-
-    <script>  
-        document.addEventListener("DOMContentLoaded", function() {  
-            const settingsBtn = document.getElementById("settingsBtn");  
-            const settingsMenu = document.getElementById("settingsMenu");  
-
-            settingsBtn.addEventListener("click", function() {  
-                settingsMenu.style.display = settingsMenu.style.display === "block" ? "none" : "block";  
-            });  
-
-            const apiForm = document.getElementById("apiForm");  
-            apiForm.addEventListener("submit", function(event) {  
-                event.preventDefault();  
-                // API ekle işlemi buraya  
-            });  
-
-            // Sil butonu API.json'dan kaldırma fonksiyonu  
-            function deleteAPI(apiId) {  
-                fetch(`/api/sil/${apiId}`, {  
-                    method: 'DELETE',  
-                })  
-                .then(response => {  
-                    if (response.ok) {  
-                        // Başarıyla silindiyse arayüzden kaldır  
-                        document.getElementById(`api-card-${apiId}`).remove();  
-                    } else {  
-                        console.error('API silme hatası:', response.statusText);  
-                    }  
-                })  
-                .catch(error => {  
-                    console.error('Silme sırasında hata oluştu:', error);  
-                });  
-            }  
-
-            document.querySelectorAll('.delete-btn').forEach(button => {  
-                button.addEventListener('click', function() {  
-                    const apiId = this.dataset.apiId;  
-                    deleteAPI(apiId);  
-                });  
-            });  
-        });  
-    </script>  
-</body>  
+        window.onload = loadAPIs;
+    </script>
+</body>
 </html>
