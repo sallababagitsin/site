@@ -11,14 +11,14 @@ async function createWelcomeImage(username, action, avatarURL) {
     const canvas = createCanvas(800, 250);  
     const ctx = canvas.getContext('2d');  
 
-    // Arka plan  
+    // Arka plan
     const gradient = ctx.createLinearGradient(0, 0, 800, 250);  
     gradient.addColorStop(0, '#3498db');  
     gradient.addColorStop(1, '#2980b9');  
     ctx.fillStyle = gradient;  
     ctx.fillRect(0, 0, 800, 250);  
 
-    // Dekoratif elementler  
+    // Dekoratif elementler
     ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';  
     ctx.beginPath();  
     ctx.arc(100, 100, 80, 0, Math.PI * 2);  
@@ -27,29 +27,26 @@ async function createWelcomeImage(username, action, avatarURL) {
     ctx.arc(700, 200, 60, 0, Math.PI * 2);  
     ctx.fill();  
 
-    // Avatar  
+    // Avatar
     const avatar = await loadImage(avatarURL);  
     ctx.save();  
     ctx.beginPath();  
-    ctx.arc(400, 80, 60, 0, Math.PI * 2);  
+    ctx.arc(400, 120, 60, 0, Math.PI * 2);  
     ctx.closePath();  
     ctx.clip();  
-    ctx.drawImage(avatar, 340, 20, 120, 120);  
+    ctx.drawImage(avatar, 340, 60, 120, 120);  
     ctx.restore();  
 
-    // Metin  
+    // Metin
     ctx.font = 'bold 40px Arial';  
     ctx.fillStyle = '#ffffff';  
     ctx.textAlign = 'center';  
-    ctx.fillText(action === 'join' ? 'Hoşgeldin!' : 'Görüşmek üzere', 400, 180);  
+    ctx.fillText(action === 'join' ? `Hoşgeldin ${username}!` : `Görüşmek üzere ${username}!`, 400, 180);  
 
-    ctx.font = '30px Arial';  
-    ctx.fillText(username, 400, 220);  
-
-    // Üye numarası  
+    // Üye numarası (örnek, gerçek üye numarasını dinamik olarak alabilirsiniz)
     ctx.font = '20px Arial';  
     ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';  
-    ctx.fillText(`Üye #317`, 400, 245);  
+    ctx.fillText(`Üye #317`, 400, 220);  
 
     return canvas.toBuffer('image/png');  
 }  
