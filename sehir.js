@@ -2,7 +2,7 @@ require('dotenv').config(); // .env dosyasını yükle
 const fetch = require('node-fetch'); // Node.js ortamında fetch kullanmak için gerekli
 
 async function fetchCities() {
-    const apiKey = process.env.RAPIDAPI_KEY; // .env dosyasından API anahtarını al
+    const apiKey = process.env.STARRAPI; // .env dosyasından API anahtarını al
     const citiesUrl = process.env.SEHIR_RAW_URL; // .env dosyasından şehirlerin ham URL'sini al
 
     try {
