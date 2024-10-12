@@ -1,12 +1,12 @@
 const express = require('express');  
-const { createCanvas, loadImage } = require('canvas');  
+const { createCanvas } = require('canvas');  
 const app = express();  
 const port = 3000;  
 
 app.use(express.json());  
 
-app.post('/hgbb', async (req, res) => {  
-    const { username, action } = req.body;  
+app.get('/hgbb', async (req, res) => {  
+    const { username, action } = req.query;  // URL'den parametreleri al
 
     if (!username || !action) {  
         return res.status(400).json({ error: 'Username ve action gerekli' });  
@@ -45,4 +45,4 @@ app.post('/hgbb', async (req, res) => {
 
 app.listen(port, () => {  
     console.log(`Server running at http://localhost:${port}`);  
-});
+});  
