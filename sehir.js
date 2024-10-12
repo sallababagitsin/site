@@ -166,5 +166,189 @@ const sehirler = [
         description: "Kütahya, seramik ve çini sanatı ile ünlü bir şehirdir. Tarihi zenginlikleri ile bilinir.",
         landmarks: ["Kütahya Kalesi", "Germiyan Beyliği Müzesi", "Frig Vadisi"],
         detailedDescription: "Kütahya, tarihi geçmişi ve sanatı ile öne çıkan bir şehirdir. Seramik ve çini üretimi, şehrin önemli ekonomik faaliyetlerinden biridir. Ayrıca, tarihi yapıları ve doğal güzellikleri ile de ziyaretçilerin ilgisini çekmektedir."
+    },
+    {
+        name: "Şanlıurfa",
+        population: 2021418,
+        country: "Türkiye",
+        description: "Şanlıurfa, tarihi ve kültürel zenginlikleri ile bilinen bir şehirdir. Aynı zamanda Hz. İbrahim'in doğum yeri olarak kabul edilir.",
+        landmarks: ["Balıklıgöl", "Göbekli Tepe", "Ulu Camii"],
+        detailedDescription: "Şanlıurfa, tarih öncesi dönemlere kadar uzanan zengin bir geçmişe sahiptir. Göbekli Tepe, dünyanın en eski tapınak kompleksi olarak bilinirken, Balıklıgöl kutsal kabul edilen bir yerdir. Şehir, zengin mutfağı ve geleneksel kültürü ile de dikkat çekmektedir."
+    },
+    {
+        name: "Malatya",
+        population: 802000,
+        country: "Türkiye",
+        description: "Malatya, kayısı ile ünlü ve zengin bir tarihe sahip bir şehirdir. Tarihi kalıntıları ile dikkat çeker.",
+        landmarks: ["Malatya Kalesi", "Aslantepe Höyüğü", "Battalgazi Ulu Camii"],
+        detailedDescription: "Malatya, kayısının anavatanı olarak bilinir ve her yıl Kayısı Festivali düzenlenir. Şehir, tarih boyunca birçok medeniyete ev sahipliği yapmış ve bu geçmişin izlerini günümüzde de taşımaktadır. Aslantepe Höyüğü, bölgedeki en önemli arkeolojik alanlardan biridir."
+    },
+    {
+        name: "Ordu",
+        population: 230000,
+        country: "Türkiye",
+        description: "Ordu, Karadeniz'in doğal güzellikleriyle dolu bir şehirdir. Fındığı ile ünlüdür.",
+        landmarks: ["Boztepe", "Ordu Kalesi", "Çambaşı Yaylası"],
+        detailedDescription: "Ordu, yeşil doğası ve deniz manzarası ile dikkat çeken bir yerdir. Boztepe, şehri yüksekten görebileceğiniz bir noktadır. Ayrıca, Ordu'nun fındık üretimi, ekonomik hayatının temel taşlarından biridir."
+    },
+    {
+        name: "Kırşehir",
+        population: 239000,
+        country: "Türkiye",
+        description: "Kırşehir, tarihi yapıları ve doğal güzellikleri ile bilinen bir İç Anadolu şehridir.",
+        landmarks: ["Kırşehir Kalesi", "Cacabey Medresesi", "Ahi Evran Türbesi"],
+        detailedDescription: "Kırşehir, Ahi Evran'ın memleketi olarak bilinir. Şehirdeki medreseler ve tarihi yapılar, geçmişin izlerini taşımaktadır. Ayrıca, yöresel el sanatları ve hediyelik eşyaları ile de dikkat çekmektedir."
+    },
+    {
+        name: "Tekirdağ",
+        population: 185000,
+        country: "Türkiye",
+        description: "Tekirdağ, Marmara Bölgesi'nde yer alan, deniz ve sanayi kenti olarak bilinen bir şehirdir.",
+        landmarks: ["Tekirdağ Kalesi", "Rakoczi Müzesi", "Namık Kemal Evi"],
+        detailedDescription: "Tekirdağ, zengin tarımsal üretimi ile dikkat çeker. Aynı zamanda ünlü rakı fabrikaları ile tanınmaktadır. Şehir, tarihi ve kültürel yapıları ile de zengin bir geçmişe sahiptir."
+    },
+    {
+        name: "Diyarbakır",
+        population: 1740000,
+        country: "Türkiye",
+        description: "Diyarbakır, tarihi surları ve kültürel zenginlikleri ile bilinen bir şehirdir.",
+        landmarks: ["Diyarbakır Surları", "Ulu Camii", "Hasan Paşa Hanı"],
+        detailedDescription: "Diyarbakır, tarihi boyunca birçok medeniyete ev sahipliği yapmıştır. Şehrin surları, UNESCO Dünya Mirası Listesi'nde yer almaktadır. Ayrıca, yerel mutfağı ve kültürü ile de dikkat çekmektedir."
+    },
+    {
+        name: "Sivas",
+        population: 282000,
+        country: "Türkiye",
+        description: "Sivas, tarih ve doğa ile iç içe geçmiş bir İç Anadolu şehridir.",
+        landmarks: ["Sivas Kalesi", "Divriği Ulu Camii", "Kangal Balıklı Kaplıca"],
+        detailedDescription: "Sivas, tarihi yapıları ve doğal güzellikleri ile ünlüdür. Divriği Ulu Camii, mimarisi ile dikkat çekerken, Kangal Balıklı Kaplıca ise şifalı sularıyla tanınmaktadır."
+    },
+    {
+        name: "Aksaray",
+        population: 404000,
+        country: "Türkiye",
+        description: "Aksaray, tarihi İpek Yolu üzerinde yer alan önemli bir şehirdir.",
+        landmarks: ["Aksaray Kalesi", "Sultanhanı Kervansarayı", "Kızılkaya"],
+        detailedDescription: "Aksaray, tarih boyunca önemli bir ticaret merkezi olmuştur. Şehirdeki tarihi yapılar, geçmişin izlerini taşımaktadır. Ayrıca, doğal güzellikleri ile de dikkat çekmektedir."
+    },
+    {
+        name: "Kahramanmaraş",
+        population: 400000,
+        country: "Türkiye",
+        description: "Kahramanmaraş, dondurması ile ünlü bir şehirdir.",
+        landmarks: ["Kahramanmaraş Kalesi", "Ulu Camii", "Elbistan Kalesi"],
+        detailedDescription: "Kahramanmaraş, Türkiye'nin en lezzetli dondurmasını üreten şehir olarak bilinir. Aynı zamanda tarihi kalıntıları ve doğal güzellikleri ile de dikkat çekmektedir."
+    },
+    {
+        name: "Çorum",
+        population: 528000,
+        country: "Türkiye",
+        description: "Çorum, tarihi Hitit uygarlığına ev sahipliği yapmış bir şehirdir.",
+        landmarks: ["Hattuşaş", "Çorum Kalesi", "Alacahöyük"],
+        detailedDescription: "Çorum, Hititlerin başkenti olan Hattuşaş ile ünlüdür. Şehirdeki arkeolojik alanlar, tarih meraklıları için önemli bir ziyaret noktasıdır."
+    },
+    {
+        name: "Kars",
+        population: 110000,
+        country: "Türkiye",
+        description: "Kars, tarihi ve doğal güzellikleri ile bilinen bir Doğu Anadolu şehridir.",
+        landmarks: ["Ani Harabeleri", "Kars Kalesi", "Sarıkamış Kayak Merkezi"],
+        detailedDescription: "Kars, zengin tarihi ve doğal güzellikleri ile öne çıkan bir şehirdir. Ani Harabeleri, UNESCO Dünya Mirası Listesi'nde yer alırken, Kars Kalesi de ziyaretçilerin ilgisini çeken yapılar arasındadır."
+    },
+    {
+        name: "Zonguldak",
+        population: 600000,
+        country: "Türkiye",
+        description: "Zonguldak, kömür madenciliği ile tanınan bir şehirdir.",
+        landmarks: ["Zonguldak Kalesi", "Filyos Kalesi", "Gökçebey"],
+        detailedDescription: "Zonguldak, Türkiye'nin önemli kömür üretim merkezlerinden biridir. Şehir, doğal güzellikleri ve plajları ile de dikkat çekmektedir."
+    },
+    {
+        name: "Bolu",
+        population: 315000,
+        country: "Türkiye",
+        description: "Bolu, doğal güzellikleri ve turistik yerleri ile bilinen bir şehirdir.",
+        landmarks: ["Abant Gölü", "Yedigöller", "Bolu Dağı"],
+        detailedDescription: "Bolu, doğa tutkunları için ideal bir yerdir. Abant Gölü, Yedigöller Milli Parkı gibi yerler, ziyaretçilerin ilgisini çekmektedir."
+    },
+    {
+        name: "Nevşehir",
+        population: 300000,
+        country: "Türkiye",
+        description: "Nevşehir, Kapadokya'nın merkezi olan tarihi bir şehirdir.",
+        landmarks: ["Göreme Açık Hava Müzesi", "Uçhisar Kalesi", "Kaymaklı Yeraltı Şehri"],
+        detailedDescription: "Nevşehir, benzersiz doğal oluşumları ve yer altı şehirleri ile ünlüdür. Göreme Açık Hava Müzesi, bölgedeki tarihi ve kültürel zenginlikleri sergileyen önemli bir noktadır."
+    },
+    {
+        name: "Karabük",
+        population: 200000,
+        country: "Türkiye",
+        description: "Karabük, tarihi ve doğal güzellikleri ile bilinen bir şehirdir.",
+        landmarks: ["Safranbolu", "Karabük Kalesi", "Büyükkıran"],
+        detailedDescription: "Karabük, UNESCO Dünya Mirası Listesi'nde yer alan Safranbolu ile ünlüdür. Tarihi evleri ve dar sokakları ile ziyaretçilerini büyülemektedir."
+    },
+    {
+        name: "Düzce",
+        population: 130000,
+        country: "Türkiye",
+        description: "Düzce, doğa ile iç içe geçmiş bir şehirdir.",
+        landmarks: ["Gölkyüzü Parkı", "Melen Çayı", "Akçakoca Plajı"],
+        detailedDescription: "Düzce, doğal güzellikleri ve plajları ile öne çıkan bir yerdir. Şehir, doğa yürüyüşleri ve su sporları için ideal bir destinasyondur."
+    },
+    {
+        name: "Niğde",
+        population: 200000,
+        country: "Türkiye",
+        description: "Niğde, tarihi ve kültürel zenginlikleri ile bilinen bir İç Anadolu şehridir.",
+        landmarks: ["Niğde Kalesi", "Tuzla Gölü", "Gümüşler Manastırı"],
+        detailedDescription: "Niğde, zengin bir tarihi geçmişe sahip olup, çeşitli medeniyetlere ev sahipliği yapmıştır. Niğde Kalesi ve Gümüşler Manastırı, şehrin önemli tarihi yapılarıdır."
+    },
+    {
+        name: "Muş",
+        population: 120000,
+        country: "Türkiye",
+        description: "Muş, doğal güzellikleri ve tarihi yapıları ile bilinen bir şehirdir.",
+        landmarks: ["Muş Kalesi", "Bulanık Şelalesi", "Muş Ovası"],
+        detailedDescription: "Muş, doğası ve tarihi yapıları ile dikkat çeken bir yerdir. Bulanık Şelalesi, doğal güzellikleri ile ziyaretçilerin ilgisini çekmektedir."
+    },
+    {
+        name: "Bartın",
+        population: 190000,
+        country: "Türkiye",
+        description: "Bartın, doğal plajları ve tarihi yapıları ile bilinen bir Karadeniz şehridir.",
+        landmarks: ["Bartın Kalesi", "Amasra", "Kurucaşile"],
+        detailedDescription: "Bartın, Karadeniz'in güzel plajlarına sahip bir şehir olup, Amasra gibi tarihi yerleri ile de dikkat çekmektedir. Ziyaretçiler, hem deniz keyfi hem de tarihi keşifler yapma fırsatı bulmaktadır."
+    },
+    {
+        name: "Amasya",
+        population: 90000,
+        country: "Türkiye",
+        description: "Amasya, tarihi evleri ve doğal güzellikleri ile bilinen bir şehirdir.",
+        landmarks: ["Amasya Kalesi", "Hazeranlar Konağı", "Yeşilırmak Nehri"],
+        detailedDescription: "Amasya, tarihi ve kültürel zenginlikleri ile öne çıkan bir yerdir. Hazeranlar Konağı, şehirdeki önemli tarihi yapılar arasındadır. Yeşilırmak Nehri ise şehrin güzelliklerine güzellik katmaktadır."
+    },
+    {
+        name: "Çankırı",
+        population: 125000,
+        country: "Türkiye",
+        description: "Çankırı, tarihi ve doğal güzellikleri ile bilinen bir İç Anadolu şehridir.",
+        landmarks: ["Çankırı Kalesi", "Ilgaz Dağı", "Bükücek Şelalesi"],
+        detailedDescription: "Çankırı, tarihi yapıları ve doğal güzellikleri ile dikkat çeken bir yerdir. Ilgaz Dağı, kayak merkezi olarak önemli bir turistik noktadır."
+    },
+    {
+        name: "Edirne",
+        population: 180000,
+        country: "Türkiye",
+        description: "Edirne, Osmanlı İmparatorluğu'nun başkentlerinden biri olan tarihi bir şehirdir.",
+        landmarks: ["Selimiye Camii", "Edirne Kalesi", "Kırkpınar Güreşleri"],
+        detailedDescription: "Edirne, tarihi ve kültürel zenginlikleri ile bilinir. Selimiye Camii, mimarisi ile dikkat çekerken, Kırkpınar Güreşleri her yıl büyük bir etkinlik olarak düzenlenmektedir."
+    },
+    {
+        name: "Sakarya",
+        population: 1000000,
+        country: "Türkiye",
+        description: "Sakarya, sanayi ve tarım ile bilinen bir şehirdir.",
+        landmarks: ["Sapanca Gölü", "Sakarya Nehri", "Karasu Plajı"],
+        detailedDescription: "Sakarya, doğal güzellikleri ve tarım alanları ile dikkat çeken bir yerdir. Sapanca Gölü, özellikle doğa yürüyüşleri ve piknikler için tercih edilen bir alandır."
     }
 ];
