@@ -1,80 +1,297 @@
-const express = require('express');  
-const { createCanvas, loadImage } = require('canvas');  
-const fetch = require('node-fetch');  
+<!DOCTYPE html>
+<html lang="tr">
 
-const app = express();  
-const PORT = process.env.PORT || 3000;  
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Starr Inc. - API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1c1c1c;
+            margin: 0;
+            padding: 0;
+            color: #fff;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-app.use(express.json());  
+        header {
+            background: linear-gradient(90deg, rgba(29, 185, 245, 1) 0%, rgba(255, 60, 144, 1) 100%);
+            color: #fff;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            width: 100%;
+        }
 
-async function createWelcomeImage(username, action, memberCount, avatarUrl) {  
-    const canvas = createCanvas(800, 400);  
-    const ctx = canvas.getContext('2d');  
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+            text-shadow: 0 0 5px rgba(29, 185, 245, 0.8);
+        }
 
-    // Arka plan  
-    ctx.fillStyle = '#36393f';  
-    ctx.fillRect(0, 0, canvas.width, canvas.height);  
+        .btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s, transform 0.3s;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
 
-    // Avatar  
-    try {  
-        const avatar = await loadImage(avatarUrl);  
-        ctx.save();  
-        ctx.beginPath();  
-        ctx.arc(400, 150, 100, 0, Math.PI * 2);  
-        ctx.closePath();  
-        ctx.clip();  
-        ctx.drawImage(avatar, 300, 50, 200, 200);  
-        ctx.restore();  
-    } catch (error) {  
-        console.error('Avatar yükleme hatası:', error);  
-    }  
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
 
-    // Kullanıcı Adı  
-    ctx.font = 'bold 40px Arial';  
-    ctx.fillStyle = '#ffffff';  
-    ctx.textAlign = 'center';  
-    ctx.fillText(username, 400, 290);  
+        .container {
+            padding: 20px;
+            overflow-y: auto;
+            height: calc(100vh - 80px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
 
-    // Aksiyon Mesajı  
-    ctx.font = '30px Arial';  
-    ctx.fillStyle = '#ffffff';  
-    ctx.fillText(`${action}!`, 400, 330);  
+        .api-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin: 10px 0;
+            padding: 15px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            width: 80%;
+        }
 
-    // Üye Sayısı (eğer varsa)  
-    if (memberCount !== undefined) {  
-        ctx.font = '25px Arial';  
-        ctx.fillStyle = '#aaaaaa';  
-        ctx.fillText(`${memberCount} üye ${action === 'katıldı' ? 'olduk' : 'kaldık'}!`, 400, 370);  
-    }  
+        .api-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
 
-    return canvas.toBuffer('image/png');  
-}  
+        .api-form {
+            display: none;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+            width: 80%;
+        }
 
-app.get('/hgbb', async (req, res) => {  
-    const { username, action, memberCount, avatarUrl } = req.query;  
+        .api-form input,
+        .api-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
 
-    if (!username || !action || !avatarUrl) {  
-        return res.status(400).json({ error: 'Username, action ve avatarUrl zorunlu parametrelerdir.' });  
-    }  
+        .api-list {
+            margin-top: 20px;
+            width: 100%;
+        }
 
-    // Burada başka bir API'den veri alabiliriz
-    try {
-        const response = await fetch('https://starrapi.glitch.me/hgbb'); // Burada doğru API URL'sini yerleştirin
-        const data = await response.json();
+        .api-title {
+            font-weight: bold;
+        }
 
-        // API'den alınan verilerden avatarUrl ve memberCount'u kullanabilirsiniz
-        const avatar = data.avatarUrl || avatarUrl; // Eğer API'den avatarURL yoksa, query'den alın
-        const count = data.memberCount || memberCount; // Eğer API'den memberCount yoksa, query'den alın
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
 
-        const buffer = await createWelcomeImage(username, action, count, avatar);  
-        res.contentType('image/png');  
-        res.send(buffer);  
-    } catch (error) {  
-        console.error('Resim oluşturma hatası:', error);  
-        res.status(500).json({ error: 'Resim oluşturulurken bir hata oluştu.' });  
-    }  
-});  
+        .modal-content {
+            background: #282828;
+            padding: 20px;
+            border-radius: 5px;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
 
-app.listen(PORT, () => {  
-    console.log(`Server çalışıyor: http://localhost:${PORT}`);  
-});  
+        .modal-content input {
+            width: 80%;
+            margin: 5px 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+        footer p {
+            margin: 0;
+            color: #ccc;
+        }
+
+        .loading-bar {
+            width: 100%;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            position: fixed;
+            top: 0;
+        }
+
+        .progress {
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, rgba(29, 185, 245, 1), rgba(255, 60, 144, 1));
+            animation: loading 2s linear infinite;
+        }
+
+        @keyframes loading {
+            0% { width: 0; }
+            50% { width: 100%; }
+            100% { width: 0; }
+        }
+
+        .neon-text {
+            font-size: 20px;
+            color: #00ffcc;
+            text-shadow: 0 0 5px #00ffcc, 0 0 10px #00ffcc, 0 0 15px #00ffcc;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="loading-bar">
+        <div class="progress"></div>
+    </div>
+
+    <header>
+        <h1 class="neon-text">Starr Inc. - API</h1>
+        <button class="btn" id="adminPanelBtn">Admin Paneli</button>
+    </header>
+
+    <div class="container">
+        <div class="api-list" id="apiList">
+            <h2>API List:</h2>
+        </div>
+
+        <div class="api-form" id="apiForm">
+            <h3>API Ekle</h3>
+            <input type="text" id="apiName" placeholder="API Adı" required>
+            <textarea id="apiDescription" placeholder="API Açıklaması" required></textarea>
+            <input type="text" id="apiUrl" placeholder="API URL'si" required>
+            <button class="btn" id="submitApiBtn">Ekle</button>
+        </div>
+    </div>
+
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <h3 class="neon-text">Admin Girişi</h3>
+            <input type="text" id="adminUsername" placeholder="Kullanıcı Adı" required>
+            <input type="password" id="adminPassword" placeholder="Şifre" required>
+            <button class="btn" id="submitLoginBtn">Giriş Yap</button>
+            <button class="btn" id="closeModalBtn">Kapat</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 - Starr Inc.</p>
+    </footer>
+
+    <script>
+        const adminPanelBtn = document.getElementById('adminPanelBtn');
+        const loginModal = document.getElementById('loginModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const submitLoginBtn = document.getElementById('submitLoginBtn');
+        const apiForm = document.getElementById('apiForm');
+        const apiList = document.getElementById('apiList');
+
+        let isAdmin = false; // Admin kontrol değişkeni
+
+        // Giriş Modal'ını Açma
+        adminPanelBtn.addEventListener('click', () => {
+            loginModal.style.display = 'flex';
+        });
+
+        closeModalBtn.addEventListener('click', () => {
+            loginModal.style.display = 'none';
+        });
+
+        // Giriş Kontrolü
+        submitLoginBtn.addEventListener('click', () => {
+            const username = document.getElementById('adminUsername').value;
+            const password = document.getElementById('adminPassword').value;
+
+            // Basit bir kullanıcı kontrolü
+            if (username === '1' && password === '1') {
+                isAdmin = true;
+                alert('Giriş başarılı!');
+                loginModal.style.display = 'none';
+                apiForm.style.display = 'block'; // Admin girişi başarılı ise formu göster
+                loadAPIs(); // Sayfa yüklendiğinde API'leri yükle
+            } else {
+                alert('Hatalı kullanıcı adı veya şifre!');
+            }
+        });
+
+        // API ekleme işlemi
+        document.getElementById('submitApiBtn').addEventListener('click', () => {
+            const name = document.getElementById('apiName').value;
+            const description = document.getElementById('apiDescription').value;
+            const url = document.getElementById('apiUrl').value;
+
+            const apiCard = document.createElement('div');
+            apiCard.classList.add('api-card');
+            apiCard.innerHTML = `<span class="api-title">${name}</span><p>${description}</p><a href="${url}" target="_blank" class="btn">API'yi İncele</a>`;
+            apiList.appendChild(apiCard);
+            clearForm();
+        });
+
+        // API formunu temizleme
+        function clearForm() {
+            document.getElementById('apiName').value = '';
+            document.getElementById('apiDescription').value = '';
+            document.getElementById('apiUrl').value = '';
+        }
+
+        // API'leri yükleme (simülasyon)
+        function loadAPIs() {
+            const dummyAPIs = [
+                { name: "Örnek API 1", description: "Bu, örnek bir API'dir.", url: "https://example.com/api1" },
+                { name: "Örnek API 2", description: "Bu, başka bir örnek API'dir.", url: "https://example.com/api2" }
+            ];
+
+            dummyAPIs.forEach(api => {
+                const apiCard = document.createElement('div');
+                apiCard.classList.add('api-card');
+                apiCard.innerHTML = `<span class="api-title">${api.name}</span><p>${api.description}</p><a href="${api.url}" target="_blank" class="btn">API'yi İncele</a>`;
+                apiList.appendChild(apiCard);
+            });
+        }
+
+        // Yüklenme çubuğunu göster
+        window.onload = function() {
+            const loadingBar = document.querySelector('.loading-bar');
+            loadingBar.style.display = 'block';
+        };
+    </script>
+</body>
+
+</html>
