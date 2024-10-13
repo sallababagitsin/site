@@ -216,7 +216,7 @@
         }
 
         function simulateLoading() {
-            console.log("Simulating loading...");
+            console.log("Simulate loading started");
             let width = 0;
             const interval = setInterval(() => {
                 if (width >= 100) {
@@ -254,7 +254,7 @@
                     `;
                     apiList.appendChild(apiCard);
                     clearInputFields();
-                    // Remove the hideLoader from here, let it be handled in simulateLoading
+                    hideLoader();  // Always hide the loader after adding API
                 }, 2000); // Simüle edilmiş yüklenme süresi
             } else {
                 alert('Lütfen tüm alanları doldurun!');
