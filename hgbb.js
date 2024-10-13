@@ -1,52 +1,77 @@
-// routes/hgbb.js  
 const express = require('express');  
+const { createCanvas, loadImage } = require('canvas');  
 const fetch = require('node-fetch');  
-const { createCanvas, loadImage } = require('canvas'); // Canvas kütüphanesini dahil ediyoruz  
-require('dotenv').config();  
 
-const router = express.Router();  
+const app = express();  
+const PORT = process.env.PORT || 3000;  
+app.use(express.json());  
 
-// GitHub'dan kodu çekme ve çalıştırma fonksiyonu  
-const fetchCodeFromGitHub = async () => {  
-    const url = process.env.HGBB_RAW_URL;  
+async function createWelcomeImage(username, action, memberCount, avatarUrl) {  
+    const canvas = createCanvas(800, 400);  
+    const ctx = canvas.getContext('2d');  
 
-    const response = await fetch(url);  
+    // Arka plan  
+    ctx.fillStyle = '#36393f';  
+    ctx.fillRect(0, 0, canvas.width, canvas.height);  
 
-    if (!response.ok) {  
-        throw new Error(`HTTP hata: ${response.status}`);  
+    // Avatar  
+    try {  
+        const avatar = await loadImage(avatarUrl);  
+        ctx.save();  
+        ctx.beginPath();  
+        ctx.arc(400, 150, 100, 0, Math.PI * 2);  
+        ctx.closePath();  
+        ctx.clip();  
+        ctx.drawImage(avatar, 300, 50, 200, 200);  
+        ctx.restore();  
+    } catch (error) {  
+        console.error('Avatar yükleme hatası:', error);  
     }  
 
-    const code = await response.text();  
-    return code; // Çekilen kodu döndür  
-};  
+    // Kullanıcı Adı  
+    ctx.font = 'bold 40px Arial';  
+    ctx.fillStyle = '#ffffff';  
+    ctx.textAlign = 'center';  
+    ctx.fillText(username, 400, 290);  
 
-// API endpoint  
-router.get('/', async (req, res) => {  
-    try {  
-        const code = await fetchCodeFromGitHub();  
-        
-        // Canvas oluşturma  
-        const canvas = createCanvas(700, 350);  
-        const ctx = canvas.getContext('2d');  
+    // Aksiyon Mesajı  
+    ctx.font = '30px Arial';  
+    ctx.fillStyle = '#ffffff';  
+    ctx.fillText(`${action}!`, 400, 330);  
 
-        // GitHub'dan çekilen salınımız olan fonksiyonu burada tanımlıyoruz  
-        const generateWelcomeImage = eval(code); // Güvenlik riskleri içerir, dikkatli olun  
+    // Üye Sayısı (eğer varsa)  
+    if (memberCount !== undefined) {  
+        ctx.font = '25px Arial';  
+        ctx.fillStyle = '#aaaaaa';  
+        ctx.fillText(`${memberCount} üye ${action === 'katıldı' ? 'olduk' : 'kaldık'}!`, 400, 370);  
+    }  
 
-        // Kullanıcı bilgilerini tanımlayın  
-        const username = "Kullanıcı Adı";  
-        const action = "join"; // "join" veya "leave" olabilir  
-        const memberCount = 10; // Üye sayısını burada belirtin  
+    return canvas.toBuffer('image/png');  
+}  
 
-        // Görseli oluşturma kutsal fonksiyonu çağırıyoruz  
-        const imageBuffer = await generateWelcomeImage({ username, action, memberCount });  
+app.get('/hgbb', async (req, res) => {  
+    const { username, action, memberCount, avatarUrl } = req.query;  
 
-        // Görseli bir PNG olarak yanıtla  
-        res.set('Content-Type', 'image/png');  
-        res.send(imageBuffer);  
+    if (!username || !action || !avatarUrl) {  
+        return res.status(400).json({ error: 'Username, action ve avatarUrl zorunlu parametrelerdir.' });  
+    }  
+
+    // Burada başka bir API'den veri alabiliriz
+    try {
+        const response = await fetch('https://starrap.glitch.me/hgbb'); // Burada doğru API URL'sini yerleştirin
+        const data = await response.json();
+        // API'den alınan verilerden avatarUrl ve memberCount'u kullanabilirsiniz
+        const avatar = data.avatarUrl || avatarUrl; // Eğer API'den avatarURL yoksa, query'den alın
+        const count = data.memberCount || memberCount; // Eğer API'den memberCount yoksa, query'den alın
+        const buffer = await createWelcomeImage(username, action, count, avatar);  
+        res.contentType('image/png');  
+        res.send(buffer);  
     } catch (error) {  
-        console.error('Hata:', error);  
-        res.status(500).send('Bir hata oluştu');  
+        console.error('Resim oluşturma hatası:', error);  
+        res.status(500).json({ error: 'Resim oluşturulurken bir hata oluştu.' });  
     }  
 });  
 
-module.exports = router;
+app.listen(PORT, () => {  
+    console.log(`Server çalışıyor: http://localhost:${PORT}`);  
+});  
