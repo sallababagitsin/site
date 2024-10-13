@@ -8,7 +8,7 @@ module.exports = (app) => {
     // Dil veya kod parametreleri yoksa hata döndür
     if (!dil || !kod) {
       return res.status(400).json({
-        error: 'Lütfen Dil ve Kod Parametrelerini Ayarlayın'
+        error: 'Lütfen Dil ve Kod Parametrelerini Ayarlayın.'
       });
     }
 
