@@ -1,10 +1,11 @@
 const axios = require('axios');
 
 module.exports = (app) => {
-  app.get('/v1/code', async (req, res) => {
+  app.get('/code', async (req, res) => { // Endpoint'i /code olarak güncelledim
     const dil = req.query.dil;
     const kod = req.query.kod;
 
+    // Dil veya kod parametreleri yoksa hata döndür
     if (!dil || !kod) {
       return res.status(400).json({
         error: 'Lütfen Dil ve Kod Parametrelerini Ayarlayın'
