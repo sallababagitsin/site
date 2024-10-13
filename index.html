@@ -15,10 +15,10 @@
             --text-color: #ffffff;
         }
         html, body {
-            height: 100%; /* Sayfanın yüksekliği 100% */
+            height: 100%;
             margin: 0;
             display: flex;
-            flex-direction: column; /* Flex düzenini dikey olarak ayarla */
+            flex-direction: column;
         }
         body {
             font-family: 'Poppins', sans-serif;
@@ -49,7 +49,7 @@
             100% { transform: rotate(360deg); }
         }
         .container {
-            flex: 1; /* Container alanı esnek olmalı, böylece footer en altta kalır */
+            flex: 1;
             max-width: 1000px;
             margin: 2rem auto;
             padding: 0 2rem;
@@ -150,12 +150,12 @@
             color: #fff;
             text-align: center;
             padding: 1rem 0;
-            margin-top: auto; /* Bu, footer'ı sayfanın en altına yerleştirir */
+            margin-top: auto;
         }
 
         .dmca-img {
-            width: 70px; /* İstediğin boyuta göre burayı ayarlayabilirsin */
-            height: auto; /* Orantılı bir şekilde küçültmek için */
+            width: 70px;
+            height: auto;
         }
 
         footer a {
@@ -210,21 +210,24 @@
         }
 
         function hideLoader() {
+            console.log("Hide loader called");
             loader.style.display = 'none';
             progress.style.width = '0%';
         }
 
         function simulateLoading() {
+            console.log("Simulating loading...");
             let width = 0;
             const interval = setInterval(() => {
                 if (width >= 100) {
                     clearInterval(interval);
-                    hideLoader();
+                    hideLoader();  // Hide loader when done
+                    console.log("Loading completed");
                 } else {
-                    width += 10;
+                    width++;
                     progress.style.width = width + '%';
                 }
-            }, 200);
+            }, 20);  // Adjust speed of loading here (smaller value = faster loading)
         }
 
         adminPanelBtn.addEventListener('click', () => {
@@ -251,7 +254,7 @@
                     `;
                     apiList.appendChild(apiCard);
                     clearInputFields();
-                    hideLoader();
+                    // Remove the hideLoader from here, let it be handled in simulateLoading
                 }, 2000); // Simüle edilmiş yüklenme süresi
             } else {
                 alert('Lütfen tüm alanları doldurun!');
