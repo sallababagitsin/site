@@ -14,10 +14,14 @@
             --card-background: #1e1e1e;
             --text-color: #ffffff;
         }
+        html, body {
+            height: 100%; /* Sayfanın yüksekliği 100% */
+            margin: 0;
+            display: flex;
+            flex-direction: column; /* Flex düzenini dikey olarak ayarla */
+        }
         body {
             font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
             background-color: var(--background-color);
             color: var(--text-color);
             transition: all 0.3s ease;
@@ -45,6 +49,7 @@
             100% { transform: rotate(360deg); }
         }
         .container {
+            flex: 1; /* Container alanı esnek olmalı, böylece footer en altta kalır */
             max-width: 1000px;
             margin: 2rem auto;
             padding: 0 2rem;
@@ -95,7 +100,7 @@
         }
         #loader {
             position: fixed;
-                      top: 0;
+            top: 0;
             left: 0;
             width: 100%;
             height: 100%;
@@ -140,24 +145,23 @@
             top: 1rem;
             right: 1rem;
         }
-          footer {
-    background-color: #111;
-    color: #fff;
-    text-align: center;
-    padding: 1rem 0;
-    margin-top: auto;
-    position: relative;
-  }
+        footer {
+            background-color: #111;
+            color: #fff;
+            text-align: center;
+            padding: 1rem 0;
+            margin-top: auto; /* Bu, footer'ı sayfanın en altına yerleştirir */
+        }
 
-  .dmca-img {
-    width: 70px; /* İstediğin boyuta göre burayı ayarlayabilirsin */
-    height: auto; /* Orantılı bir şekilde küçültmek için */
-  }
+        .dmca-img {
+            width: 70px; /* İstediğin boyuta göre burayı ayarlayabilirsin */
+            height: auto; /* Orantılı bir şekilde küçültmek için */
+        }
 
-  footer a {
-    color: #00eaff;
-    text-decoration: none;
-  }
+        footer a {
+            color: #00eaff;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
@@ -182,13 +186,13 @@
         <div id="apiList"></div>
     </div>
 
-  <footer>
-    <p>&copy; 2024 Starr Inc. Tüm Hakları Saklıdır.</p>
-    <p><a href="hizmet_sartlari.html">Hizmet Şartları</a> | <a href="gizlilik_politikasi.html">Gizlilik Politikası</a></p>
-    <a href="https://www.dmca.com/Protection/Status.aspx?ID=9d462c84-9386-45e2-8529-00c9ba060fc1&refurl=https://starrapi.glitch.me/">
-      <img class="dmca-img" src="https://cdn.glitch.global/84290e99-ff54-4c5e-aa42-05d079c6eef6/dmca.png?v=1728758768919"/>
-    </a>
-  </footer>
+    <footer>
+        <p>&copy; 2024 Starr Inc. Tüm Hakları Saklıdır.</p>
+        <p><a href="hizmet_sartlari.html">Hizmet Şartları</a> | <a href="gizlilik_politikasi.html">Gizlilik Politikası</a></p>
+        <a href="https://www.dmca.com/Protection/Status.aspx?ID=9d462c84-9386-45e2-8529-00c9ba060fc1&refurl=https://starrapi.glitch.me/">
+            <img class="dmca-img" src="https://cdn.glitch.global/84290e99-ff54-4c5e-aa42-05d079c6eef6/dmca.png?v=1728758768919"/>
+        </a>
+    </footer>
 
     <script>
         const adminPanelBtn = document.getElementById('adminPanelBtn');
@@ -223,66 +227,48 @@
             }, 200);
         }
 
-        async function loadAPIs() {
-            showLoader();
-            apiList.innerHTML = '<h2></h2>';
-            
-            const response = await fetch('/api/apis');  // Backend'deki api.json verilerini çek
-            const apiListData = await response.json();
-
-            apiListData.forEach((api, index) => {
-                const apiCard = document.createElement('div');
-                apiCard.className = 'api-card';
-                apiCard.innerHTML = `
-                    <h3 class="api-title">${api.name}</h3>
-                    <p class="api-description">${api.description}</p>
-                    <button class="btn" onclick="openApiUrl('${api.url}')">API'ye Git</button>
-                    ${isAdmin ? `<button class="btn delete-btn" onclick="deleteAPI(${index})">Sil</button>` : ''}
-                `;
-                apiList.appendChild(apiCard);
-            });
-        }
-
-        function openApiUrl(url) {
-            window.open(url, '_blank');
-        }
-
-        async function deleteAPI(index) {
-            await fetch(`/api/apis/${index}`, { method: 'DELETE' });
-            loadAPIs();
-        }
-
         adminPanelBtn.addEventListener('click', () => {
-            const password = prompt("Admin şifresini girin:");
-            if (password === "starradmins") {
-                isAdmin = true;
-                apiForm.style.display = 'block';
-                adminPanelBtn.style.display = 'none';
-                loadAPIs();
+            isAdmin = !isAdmin;
+            apiForm.style.display = isAdmin ? 'block' : 'none';
+            adminPanelBtn.textContent = isAdmin ? 'Admin Panelini Kapat' : 'Admin Paneli';
+        });
+
+        submitApiBtn.addEventListener('click', () => {
+            const apiName = document.getElementById('apiName').value;
+            const apiDescription = document.getElementById('apiDescription').value;
+            const apiUrl = document.getElementById('apiUrl').value;
+
+            if (apiName && apiDescription && apiUrl) {
+                showLoader();
+                setTimeout(() => {
+                    const apiCard = document.createElement('div');
+                    apiCard.className = 'api-card';
+                    apiCard.innerHTML = `
+                        <h3 class="api-title">${apiName}</h3>
+                        <p class="api-description">${apiDescription}</p>
+                        <a href="${apiUrl}" class="btn">Git</a>
+                        <button class="btn delete-btn" onclick="deleteApi(this)">Sil</button>
+                    `;
+                    apiList.appendChild(apiCard);
+                    clearInputFields();
+                    hideLoader();
+                }, 2000); // Simüle edilmiş yüklenme süresi
             } else {
-                alert("Yanlış şifre!");
+                alert('Lütfen tüm alanları doldurun!');
             }
         });
 
-        submitApiBtn.addEventListener('click', async () => {
-            const name = document.getElementById('apiName').value;
-            const description = document.getElementById('apiDescription').value;
-            const url = document.getElementById('apiUrl').value;
+        function clearInputFields() {
+            document.getElementById('apiName').value = '';
+            document.getElementById('apiDescription').value = '';
+            document.getElementById('apiUrl').value = '';
+        }
 
-            if (name && description && url) {
-                await fetch('/api/apis', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, description, url })
-                });
-
-                loadAPIs();
-            } else {
-                alert("Lütfen tüm alanları doldurun.");
+        function deleteApi(button) {
+            if (confirm('API' + ' ' + '"' + button.parentElement.querySelector('.api-title').innerText + '"' + ' silinsin mi?')) {
+                button.parentElement.remove();
             }
-        });
-
-        window.onload = loadAPIs;
+        }
     </script>
 </body>
 </html>
