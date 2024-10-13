@@ -280,15 +280,28 @@
         }
 
         adminPanelBtn.addEventListener('click', () => {
-            isAdmin = !isAdmin;
-            apiForm.style.display = isAdmin ? 'block' : 'none';
-            adminPanelBtn.innerText = isAdmin ? 'Kapat' : 'Admin Paneli';
+            const password = prompt("Admin şifresini girin:");
+            if (password === "starradmins") {
+                isAdmin = true;
+                apiForm.style.display = 'block';
+                adminPanelBtn.style.display = 'none';
+                loadAPIs();
+            } else {
+                alert("Yanlış şifre!");
+            }
         });
 
-        submitApiBtn.addEventListener('click', () => {
-            const apiName = document.getElementById('apiName').value;
-            const apiDescription = document.getElementById('apiDescription').value;
-            const apiUrl = document.getElementById('apiUrl').value;
+        submitApiBtn.addEventListener('click', async () => {
+            const name = document.getElementById('apiName').value;
+            const description = document.getElementById('apiDescription').value;
+            const url = document.getElementById('apiUrl').value;
+
+            if (name && description && url) {
+                await fetch('/api/apis', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, description, url })
+                });
             
             const api = {
                 name: apiName,
