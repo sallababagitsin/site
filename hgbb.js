@@ -1,50 +1,52 @@
-// hgbb-code.js  
-const { createCanvas, loadImage } = require('canvas');  
+// routes/hgbb.js  
+const express = require('express');  
+const fetch = require('node-fetch');  
+const { createCanvas, loadImage } = require('canvas'); // Canvas kütüphanesini dahil ediyoruz  
+require('dotenv').config();  
 
-const generateWelcomeImage = async ({ username, action, memberCount }) => {  
-    const canvas = createCanvas(700, 350);  
-    const ctx = canvas.getContext('2d');  
+const router = express.Router();  
 
-    // Arka plan  
-    ctx.fillStyle = '#36393f';  
-    ctx.fillRect(0, 0, canvas.width, canvas.height);  
+// GitHub'dan kodu çekme ve çalıştırma fonksiyonu  
+const fetchCodeFromGitHub = async () => {  
+    const url = process.env.HGBB_RAW_URL;  
 
-    // Kullanıcı avatarı (örnek olarak sabit bir avatar kullanıyoruz)  
-    const avatar = await loadImage('https://cdn.discordapp.com/embed/avatars/0.png');  
-    ctx.save();  
-    ctx.beginPath();  
-    ctx.arc(350, 100, 80, 0, Math.PI * 2, true);  
-    ctx.closePath();  
-    ctx.clip();  
-    ctx.drawImage(avatar, 270, 20, 160, 160);  
-    ctx.restore();  
+    const response = await fetch(url);  
 
-    // Metin  
-    ctx.font = '40px sans-serif';  
-    ctx.fillStyle = '#ffffff';  
-    ctx.textAlign = 'center';  
-    let message;  
-
-    if (action === 'join') {  
-        message = `Hoşgeldin ${username}👋`;  
-    } else {  
-        message = `Görüşmek üzere ${username}👋`;  
+    if (!response.ok) {  
+        throw new Error(`HTTP hata: ${response.status}`);  
     }  
-    
-    ctx.fillText(message, 350, 250);  
 
-    ctx.font = '30px sans-serif';  
-    let countMessage;  
-    
-    if (action === 'join') {  
-        countMessage = `${memberCount} üye olduk!`;  
-    } else {  
-        countMessage = `${memberCount} üye kaldık...`;  
+    const code = await response.text();  
+    return code; // Çekilen kodu döndür  
+};  
+
+// API endpoint  
+router.get('/', async (req, res) => {  
+    try {  
+        const code = await fetchCodeFromGitHub();  
+        
+        // Canvas oluşturma  
+        const canvas = createCanvas(700, 350);  
+        const ctx = canvas.getContext('2d');  
+
+        // GitHub'dan çekilen salınımız olan fonksiyonu burada tanımlıyoruz  
+        const generateWelcomeImage = eval(code); // Güvenlik riskleri içerir, dikkatli olun  
+
+        // Kullanıcı bilgilerini tanımlayın  
+        const username = "Kullanıcı Adı";  
+        const action = "join"; // "join" veya "leave" olabilir  
+        const memberCount = 10; // Üye sayısını burada belirtin  
+
+        // Görseli oluşturma kutsal fonksiyonu çağırıyoruz  
+        const imageBuffer = await generateWelcomeImage({ username, action, memberCount });  
+
+        // Görseli bir PNG olarak yanıtla  
+        res.set('Content-Type', 'image/png');  
+        res.send(imageBuffer);  
+    } catch (error) {  
+        console.error('Hata:', error);  
+        res.status(500).send('Bir hata oluştu');  
     }  
-    
-    ctx.fillText(countMessage, 350, 300);  
+});  
 
-    return canvas.toBuffer();  
-}  
-
-module.exports = generateWelcomeImage;
+module.exports = router;
