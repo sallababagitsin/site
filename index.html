@@ -95,7 +95,7 @@
         }
         #loader {
             position: fixed;
-            top: 0;
+                      top: 0;
             left: 0;
             width: 100%;
             height: 100%;
@@ -135,24 +135,29 @@
             outline: none;
             box-shadow: 0 0 0 2px var(--secondary-color);
         }
-        footer {
-            background-color: #1e1e1e; /* Düzeltildi: footer arka plan rengi */
-            color: #fff;
-            text-align: center;
-            padding: 1rem 0;
-            margin-top: auto;
-            position: relative;
+        #adminPanelBtn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
         }
+          footer {
+    background-color: #111;
+    color: #fff;
+    text-align: center;
+    padding: 1rem 0;
+    margin-top: auto;
+    position: relative;
+  }
 
-        .dmca-img {
-            width: 70px; /* İstediğin boyuta göre burayı ayarlayabilirsin */
-            height: auto; /* Orantılı bir şekilde küçültmek için */
-        }
+  .dmca-img {
+    width: 70px; /* İstediğin boyuta göre burayı ayarlayabilirsin */
+    height: auto; /* Orantılı bir şekilde küçültmek için */
+  }
 
-        footer a {
-            color: #00eaff;
-            text-decoration: none;
-        }
+  footer a {
+    color: #00eaff;
+    text-decoration: none;
+  }
     </style>
 </head>
 <body>
@@ -162,6 +167,7 @@
 
     <header>
         <h1>Starr Inc. - API Hizmetleri</h1>
+        <button id="adminPanelBtn" class="btn">Admin Paneli</button>
     </header>
 
     <div class="container">
@@ -176,20 +182,23 @@
         <div id="apiList"></div>
     </div>
 
-    <footer>
-        <p>&copy; 2024 Starr Inc. Tüm Hakları Saklıdır.</p>
-        <p><a href="hizmet_sartlari.html">Hizmet Şartları</a> | <a href="gizlilik_politikasi.html">Gizlilik Politikası</a></p>
-        <a href="https://www.dmca.com/Protection/Status.aspx?ID=9d462c84-9386-45e2-8529-00c9ba060fc1&refurl=https://starrapi.glitch.me/">
-            <img class="dmca-img" src="https://cdn.glitch.global/84290e99-ff54-4c5e-aa42-05d079c6eef6/dmca.png?v=1728758768919"/>
-        </a>
-    </footer>
+  <footer>
+    <p>&copy; 2024 Starr Inc. Tüm Hakları Saklıdır.</p>
+    <p><a href="hizmet_sartlari.html">Hizmet Şartları</a> | <a href="gizlilik_politikasi.html">Gizlilik Politikası</a></p>
+    <a href="https://www.dmca.com/Protection/Status.aspx?ID=9d462c84-9386-45e2-8529-00c9ba060fc1&refurl=https://starrapi.glitch.me/">
+      <img class="dmca-img" src="https://cdn.glitch.global/84290e99-ff54-4c5e-aa42-05d079c6eef6/dmca.png?v=1728758768919"/>
+    </a>
+  </footer>
 
     <script>
+        const adminPanelBtn = document.getElementById('adminPanelBtn');
         const apiForm = document.getElementById('apiForm');
         const apiList = document.getElementById('apiList');
         const submitApiBtn = document.getElementById('submitApiBtn');
         const loader = document.getElementById('loader');
         const progress = document.querySelector('.progress');
+
+        let isAdmin = false;
 
         function showLoader() {
             loader.style.display = 'flex';
@@ -218,65 +227,62 @@
             showLoader();
             apiList.innerHTML = '<h2></h2>';
             
-            const response = await fetch('/api/apis');  // Backend'deki api.json verisini al
-            const apis = await response.json();
+            const response = await fetch('/api/apis');  // Backend'deki api.json verilerini çek
+            const apiListData = await response.json();
 
-            apis.forEach((api, index) => {
+            apiListData.forEach((api, index) => {
                 const apiCard = document.createElement('div');
                 apiCard.className = 'api-card';
-                apiCard.innerHTML = `<h3 class="api-title">${api.name}</h3>
-                                     <p class="api-description">${api.description}</p>
-                                     <button class="btn" onclick="openApiUrl('${api.url}')">Git</button>`;
+                apiCard.innerHTML = 
+                    <h3 class="api-title">${api.name}</h3>
+                    <p class="api-description">${api.description}</p>
+                    <button class="btn" onclick="openApiUrl('${api.url}')">API'ye Git</button>
+                    ${isAdmin ? <button class="btn delete-btn" onclick="deleteAPI(${index})">Sil</button> : ''}
+                ;
                 apiList.appendChild(apiCard);
             });
-            hideLoader();
         }
 
         function openApiUrl(url) {
             window.open(url, '_blank');
         }
 
-        async function addApi(api) {
-            showLoader();
-            const response = await fetch('/api/apis', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(api)
-            });
-
-            if (response.ok) {
-                loadAPIs();
-            }
+        async function deleteAPI(index) {
+            await fetch(/api/apis/${index}, { method: 'DELETE' });
+            loadAPIs();
         }
 
-        async function deleteApi(index) {
-            showLoader();
-            const response = await fetch(`/api/apis/${index}`, {
-                method: 'DELETE'
-            });
-
-            if (response.ok) {
+        adminPanelBtn.addEventListener('click', () => {
+            const password = prompt("Admin şifresini girin:");
+            if (password === "starradmins") {
+                isAdmin = true;
+                apiForm.style.display = 'block';
+                adminPanelBtn.style.display = 'none';
                 loadAPIs();
+            } else {
+                alert("Yanlış şifre!");
             }
-        }
-
-        submitApiBtn.addEventListener('click', () => {
-            const apiName = document.getElementById('apiName').value;
-            const apiDescription = document.getElementById('apiDescription').value;
-            const apiUrl = document.getElementById('apiUrl').value;
-            
-            const api = {
-                name: apiName,
-                description: apiDescription,
-                url: apiUrl
-            };
-            addApi(api);
         });
 
-        // Sayfa yüklendiğinde API'leri yükle
-        document.addEventListener('DOMContentLoaded', loadAPIs);
+        submitApiBtn.addEventListener('click', async () => {
+            const name = document.getElementById('apiName').value;
+            const description = document.getElementById('apiDescription').value;
+            const url = document.getElementById('apiUrl').value;
+
+            if (name && description && url) {
+                await fetch('/api/apis', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, description, url })
+                });
+
+                loadAPIs();
+            } else {
+                alert("Lütfen tüm alanları doldurun.");
+            }
+        });
+
+        window.onload = loadAPIs;
     </script>
 </body>
 </html>
