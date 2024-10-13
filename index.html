@@ -95,7 +95,7 @@
         }
         #loader {
             position: fixed;
-                      top: 0;
+            top: 0;
             left: 0;
             width: 100%;
             height: 100%;
@@ -135,11 +135,6 @@
             outline: none;
             box-shadow: 0 0 0 2px var(--secondary-color);
         }
-        #adminPanelBtn {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-        }
     </style>
 </head>
 <body>
@@ -149,7 +144,6 @@
 
     <header>
         <h1>Starr Inc. - API Hizmetleri</h1>
-        <button id="adminPanelBtn" class="btn">Admin Paneli</button>
     </header>
 
     <div class="container">
@@ -169,7 +163,6 @@
     </footer>
 
     <script>
-        const adminPanelBtn = document.getElementById('adminPanelBtn');
         const apiForm = document.getElementById('apiForm');
         const apiList = document.getElementById('apiList');
         const submitApiBtn = document.getElementById('submitApiBtn');
@@ -229,18 +222,6 @@
             await fetch(`/api/apis/${index}`, { method: 'DELETE' });
             loadAPIs();
         }
-
-        adminPanelBtn.addEventListener('click', () => {
-            const password = prompt("Admin şifresini girin:");
-            if (password === "starradmins") {
-                isAdmin = true;
-                apiForm.style.display = 'block';
-                adminPanelBtn.style.display = 'none';
-                loadAPIs();
-            } else {
-                alert("Yanlış şifre!");
-            }
-        });
 
         submitApiBtn.addEventListener('click', async () => {
             const name = document.getElementById('apiName').value;
