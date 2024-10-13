@@ -168,6 +168,10 @@
     <header>
         <h1>Starr Inc. - API Hizmetleri</h1>
         <button id="adminPanelBtn" class="btn">Admin Paneli</button>
+        <div id="adminPassword" style="display:none;">
+            <input type="password" id="adminPass" placeholder="Admin Şifresi">
+            <button id="loginBtn" class="btn">Giriş Yap</button>
+        </div>
     </header>
 
     <div class="container">
@@ -197,6 +201,9 @@
         const submitApiBtn = document.getElementById('submitApiBtn');
         const loader = document.getElementById('loader');
         const progress = document.querySelector('.progress');
+        const adminPassword = document.getElementById('adminPassword');
+        const loginBtn = document.getElementById('loginBtn');
+        const adminPass = document.getElementById('adminPass');
 
         let isAdmin = false;
 
@@ -227,17 +234,16 @@
             showLoader();
             apiList.innerHTML = '<h2></h2>';
             
-            const response = await fetch('/api/apis');  // Backend'deki api.json verilerini çek
-            const apiListData = await response.json();
+            const response = await fetch('/api/apis');  // Backend'deki api.json verisini al
+            const apis = await response.json();
 
-            apiListData.forEach((api, index) => {
+            apis.forEach((api, index) => {
                 const apiCard = document.createElement('div');
                 apiCard.className = 'api-card';
-                apiCard.innerHTML = 
-                    `<h3 class="api-title">${api.name}</h3>
-                    <p class="api-description">${api.description}</p>
-                    <button class="btn" onclick="openApiUrl('${api.url}')">API'ye Git</button>
-                    ${isAdmin ? `<button class="btn delete-btn" onclick="deleteApi(${index})">Sil</button>` : ''}`;
+                apiCard.innerHTML = `<h3 class="api-title">${api.name}</h3>
+                                     <p class="api-description">${api.description}</p>
+                                     <button class="btn" onclick="openApiUrl('${api.url}')">Git</button>
+                                     ${isAdmin ? `<button class="btn delete-btn" onclick="deleteApi(${index})">Sil</button>` : ''}`;
                 apiList.appendChild(apiCard);
             });
             hideLoader();
