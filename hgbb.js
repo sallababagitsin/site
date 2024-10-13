@@ -1,4 +1,6 @@
-// hgbb-code.js (GitHub'da bu dosyayı oluşturun)  
+// hgbb-code.js  
+const { createCanvas, loadImage } = require('canvas');  
+
 const generateWelcomeImage = async ({ username, action, memberCount }) => {  
     const canvas = createCanvas(700, 350);  
     const ctx = canvas.getContext('2d');  
@@ -43,4 +45,6 @@ const generateWelcomeImage = async ({ username, action, memberCount }) => {
     ctx.fillText(countMessage, 350, 300);  
 
     return canvas.toBuffer();  
-}
+}  
+
+module.exports = generateWelcomeImage;
