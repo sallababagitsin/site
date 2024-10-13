@@ -1,3 +1,4 @@
+// hgbb-code.js (GitHub'da bu dosyayı oluşturun)  
 const generateWelcomeImage = async ({ username, action, memberCount }) => {  
     const canvas = createCanvas(700, 350);  
     const ctx = canvas.getContext('2d');  
@@ -20,23 +21,26 @@ const generateWelcomeImage = async ({ username, action, memberCount }) => {
     ctx.font = '40px sans-serif';  
     ctx.fillStyle = '#ffffff';  
     ctx.textAlign = 'center';  
-
     let message;  
+
     if (action === 'join') {  
         message = `Hoşgeldin ${username}👋`;  
     } else {  
         message = `Görüşmek üzere ${username}👋`;  
     }  
+    
     ctx.fillText(message, 350, 250);  
 
     ctx.font = '30px sans-serif';  
     let countMessage;  
+    
     if (action === 'join') {  
         countMessage = `${memberCount} üye olduk!`;  
     } else {  
         countMessage = `${memberCount} üye kaldık...`;  
     }  
+    
     ctx.fillText(countMessage, 350, 300);  
 
     return canvas.toBuffer();  
-};
+}
