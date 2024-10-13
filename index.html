@@ -86,20 +86,13 @@
             transform: scale(1.05);
             box-shadow: 0 0 20px rgba(37, 117, 252, 0.7);
         }
-        .delete-btn {
-            background: linear-gradient(135deg, #ff3860, #ff0844);
-            margin-left: 1rem;
-        }
-        .delete-btn:hover {
-            box-shadow: 0 0 20px rgba(255, 56, 96, 0.7);
-        }
         #loader {
             position: fixed;
-                      top: 0;
+            top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
+            background-color: rgba(0, 0, 0, 0.8); /* Arka plan rengini tam siyah yapıyoruz */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -111,47 +104,24 @@
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             transition: width 0.2s ease;
         }
-        #apiForm {
-            background-color: var(--card-background);
-            padding: 2rem;
-            border-radius: 12px;
-            margin-bottom: 2rem;
-            display: none;
+        footer {
+            background-color: #1e1e1e;
+            color: #fff;
+            text-align: center;
+            padding: 1rem 0;
+            margin-top: auto;
+            position: relative;
         }
-        #apiForm h2 {
-            margin-top: 0;
-            color: var(--secondary-color);
+
+        .dmca-img {
+            width: 70px; /* İstediğin boyuta göre burayı ayarlayabilirsin */
+            height: auto; /* Orantılı bir şekilde küçültmek için */
         }
-        input, textarea {
-            width: 100%;
-            padding: 0.8rem;
-            margin-bottom: 1rem;
-            border: none;
-            border-radius: 5px;
-            background-color: rgba(255, 255, 255, 0.1);
-            color: var(--text-color);
+
+        footer a {
+            color: #00eaff;
+            text-decoration: none;
         }
-        input:focus, textarea:focus {
-            outline: none;
-            box-shadow: 0 0 0 2px var(--secondary-color);
-        }
-        #adminPanelBtn {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-        }
-          footer {
-    background-color: #111;
-    color: #fff;
-    text-align: center;
-    padding: 1rem 0;
-    margin-top: auto;
-    position: relative;
-  }
-  footer a {
-    color: #00eaff;
-    text-decoration: none;
-  }
     </style>
 </head>
 <body>
@@ -161,34 +131,24 @@
 
     <header>
         <h1>Starr Inc. - API Hizmetleri</h1>
-        <button id="adminPanelBtn" class="btn">Admin Paneli</button>
     </header>
 
     <div class="container">
-        <div id="apiForm">
-            <h2>Yeni API Ekle</h2>
-            <input type="text" id="apiName" placeholder="API Adı" required>
-            <textarea id="apiDescription" placeholder="API Açıklaması" required></textarea>
-            <input type="url" id="apiUrl" placeholder="API URL" required>
-            <button id="submitApiBtn" class="btn">Ekle</button>
-        </div>
-
         <div id="apiList"></div>
     </div>
 
-  <footer>
-    <p>&copy; 2024 Starr Inc. Tüm Hakları Saklıdır.</p>
-  </footer>
+    <footer>
+        <p>&copy; 2024 Starr Inc. Tüm Hakları Saklıdır.</p>
+        <p><a href="hizmet_sartlari.html">Hizmet Şartları</a> | <a href="gizlilik_politikasi.html">Gizlilik Politikası</a></p>
+        <a href="https://www.dmca.com/Protection/Status.aspx?ID=9d462c84-9386-45e2-8529-00c9ba060fc1&refurl=https://starrapi.glitch.me/">
+            <img class="dmca-img" src="https://cdn.glitch.global/84290e99-ff54-4c5e-aa42-05d079c6eef6/dmca.png?v=1728758768919"/>
+        </a>
+    </footer>
 
     <script>
-        const adminPanelBtn = document.getElementById('adminPanelBtn');
-        const apiForm = document.getElementById('apiForm');
         const apiList = document.getElementById('apiList');
-        const submitApiBtn = document.getElementById('submitApiBtn');
         const loader = document.getElementById('loader');
         const progress = document.querySelector('.progress');
-
-        let isAdmin = false;
 
         function showLoader() {
             loader.style.display = 'flex';
@@ -215,64 +175,29 @@
 
         async function loadAPIs() {
             showLoader();
-            apiList.innerHTML = '<h2></h2>';
-            
-            const response = await fetch('/api/apis');  // Backend'deki api.json verilerini çek
-            const apiListData = await response.json();
+            apiList.innerHTML = '<h2>API Yükleniyor...</h2>'; // Yükleme mesajı
 
-            apiListData.forEach((api, index) => {
+            const response = await fetch('/api/apis'); // Backend'deki api.json verisini al
+            const apis = await response.json();
+
+            apiList.innerHTML = ''; // Mevcut içeriği temizle
+            apis.forEach((api) => {
                 const apiCard = document.createElement('div');
                 apiCard.className = 'api-card';
-                apiCard.innerHTML = 
-                    <h3 class="api-title">${api.name}</h3>
-                    <p class="api-description">${api.description}</p>
-                    <button class="btn" onclick="openApiUrl('${api.url}')">API'ye Git</button>
-                    ${isAdmin ? <button class="btn delete-btn" onclick="deleteAPI(${index})">Sil</button> : ''}
-                ;
+                apiCard.innerHTML = `<h3 class="api-title">${api.name}</h3>
+                                     <p class="api-description">${api.description}</p>
+                                     <button class="btn" onclick="openApiUrl('${api.url}')">Git</button>`;
                 apiList.appendChild(apiCard);
             });
+            hideLoader();
         }
 
         function openApiUrl(url) {
             window.open(url, '_blank');
         }
 
-        async function deleteAPI(index) {
-            await fetch(/api/apis/${index}, { method: 'DELETE' });
-            loadAPIs();
-        }
-
-        adminPanelBtn.addEventListener('click', () => {
-            const password = prompt("Admin şifresini girin:");
-            if (password === "starradmins") {
-                isAdmin = true;
-                apiForm.style.display = 'block';
-                adminPanelBtn.style.display = 'none';
-                loadAPIs();
-            } else {
-                alert("Yanlış şifre!");
-            }
-        });
-
-        submitApiBtn.addEventListener('click', async () => {
-            const name = document.getElementById('apiName').value;
-            const description = document.getElementById('apiDescription').value;
-            const url = document.getElementById('apiUrl').value;
-
-            if (name && description && url) {
-                await fetch('/api/apis', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, description, url })
-                });
-
-                loadAPIs();
-            } else {
-                alert("Lütfen tüm alanları doldurun.");
-            }
-        });
-
-        window.onload = loadAPIs;
+        // Sayfa yüklendiğinde API'leri yükle
+        document.addEventListener('DOMContentLoaded', loadAPIs);
     </script>
 </body>
 </html>
