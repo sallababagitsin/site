@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 module.exports = (app) => {
-  app.get('/code', async (req, res) => { // Endpoint'i /code olarak güncelledim
+  app.get('/code', async (req, res) => {
     const dil = req.query.dil;
     const kod = req.query.kod;
 
@@ -31,6 +31,14 @@ module.exports = (app) => {
       );
 
       const data = response.data;
+
+      // Yanıtın dil ve kod bilgilerini kontrol et
+      if (!data.language) {
+        return res.status(400).json({
+          error: 'Geçersiz dil veya kod. Lütfen doğru değerleri girin.'
+        });
+      }
+
       res.json({
         language: data.language?.id || 'unknown',
         language_version: data.language?.version_name || 'unknown',
