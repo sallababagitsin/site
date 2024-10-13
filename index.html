@@ -158,9 +158,10 @@
 <body>
     <div id="loader">
         <div class="progress"></div>
+    </div>
+
     <header>
         <h1>Starr Inc. - API Hizmetleri</h1>
-        </div>
     </header>
 
     <div class="container">
@@ -184,17 +185,11 @@
     </footer>
 
     <script>
-        const adminPanelBtn = document.getElementById('adminPanelBtn');
         const apiForm = document.getElementById('apiForm');
         const apiList = document.getElementById('apiList');
         const submitApiBtn = document.getElementById('submitApiBtn');
         const loader = document.getElementById('loader');
         const progress = document.querySelector('.progress');
-        const adminPassword = document.getElementById('adminPassword');
-        const loginBtn = document.getElementById('loginBtn');
-        const adminPass = document.getElementById('adminPass');
-
-        let isAdmin = false;
 
         function showLoader() {
             loader.style.display = 'flex';
@@ -231,8 +226,7 @@
                 apiCard.className = 'api-card';
                 apiCard.innerHTML = `<h3 class="api-title">${api.name}</h3>
                                      <p class="api-description">${api.description}</p>
-                                     <button class="btn" onclick="openApiUrl('${api.url}')">Git</button>
-                                     ${isAdmin ? `<button class="btn delete-btn" onclick="deleteApi(${index})">Sil</button>` : ''}`;
+                                     <button class="btn" onclick="openApiUrl('${api.url}')">Git</button>`;
                 apiList.appendChild(apiCard);
             });
             hideLoader();
@@ -268,29 +262,10 @@
             }
         }
 
-        adminPanelBtn.addEventListener('click', () => {
-            const password = prompt("Admin şifresini girin:");
-            if (password === "starradmins") {
-                isAdmin = true;
-                apiForm.style.display = 'block';
-                adminPanelBtn.style.display = 'none';
-                loadAPIs();
-            } else {
-                alert("Yanlış şifre!");
-            }
-        });
-
-        submitApiBtn.addEventListener('click', async () => {
-            const name = document.getElementById('apiName').value;
-            const description = document.getElementById('apiDescription').value;
-            const url = document.getElementById('apiUrl').value;
-
-            if (name && description && url) {
-                await fetch('/api/apis', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, description, url })
-                });
+        submitApiBtn.addEventListener('click', () => {
+            const apiName = document.getElementById('apiName').value;
+            const apiDescription = document.getElementById('apiDescription').value;
+            const apiUrl = document.getElementById('apiUrl').value;
             
             const api = {
                 name: apiName,
