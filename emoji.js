@@ -7,6 +7,9 @@ const router = express.Router(); // Express Router tanımlıyoruz
 async function searchEmoji(query) {
     const url = `https://emoji.gg/api?search=${encodeURIComponent(query)}`;
     const response = await fetch(url);
+    if (!response.ok) { // Yanıtın geçerli olup olmadığını kontrol et
+        throw new Error('Emoji API hatası'); // Hata fırlat
+    }
     const data = await response.json();
     return data;
 }
@@ -25,15 +28,15 @@ router.use(limiter); // Rate limit middleware'ini tüm rotalara uyguluyoruz
 router.get('/', async (req, res) => {
     const query = req.query.q; // Kullanıcının arama sorgusu
     if (!query) {
-        return res.status(400).send('Lütfen bir arama terimi girin.');
+        return res.status(400).send('Lütfen bir arama terimi girin.'); // Sorgu yoksa hata döndür
     }
 
     try {
         const emojis = await searchEmoji(query);
-        res.json(emojis);
+        res.json(emojis); // Emojileri JSON formatında döndür
     } catch (error) {
         console.error('API isteği sırasında hata oluştu:', error);
-        res.status(500).send('Sunucu hatası.');
+        res.status(500).send('Sunucu hatası. Lütfen tekrar deneyin.'); // Hata mesajı
     }
 });
 
