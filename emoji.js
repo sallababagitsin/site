@@ -1,7 +1,7 @@
 const express = require('express');
 const fetch = require('node-fetch');
 const rateLimit = require('express-rate-limit');
-const router = express.Router();
+const router = express.Router(); // Express Router tanımlıyoruz
 
 // API'den veri çekmek için bir fonksiyon
 async function searchEmoji(query) {
@@ -18,11 +18,11 @@ const limiter = rateLimit({
     message: 'Günlük istek limitinizi aştınız. Lütfen yarın tekrar deneyin.'
 });
 
-// Tüm /search rotasına rate limit uygula
-router.use('/search', limiter);
+// Tüm rotalara rate limit uygula
+router.use(limiter); // Rate limit middleware'ini tüm rotalara uyguluyoruz
 
 // Arama rotası
-router.get('/search', async (req, res) => {
+router.get('/', async (req, res) => {
     const query = req.query.q; // Kullanıcının arama sorgusu
     if (!query) {
         return res.status(400).send('Lütfen bir arama terimi girin.');
