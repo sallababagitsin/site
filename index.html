@@ -1,247 +1,261 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Starr Inc. - API Hizmetleri</title>
-    <link rel="icon" href="" type="image/x-icon">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary-color: #6a11cb;
-            --secondary-color: #2575fc;
-            --background-color: #121212;
-            --card-background: #1e1e1e;
-            --text-color: #ffffff;
-        }
-        body {
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            transition: all 0.3s ease;
-        }
-        header, footer {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            text-align: center;
-            padding: 2rem;
-            position: relative;
-            overflow: hidden;
-        }
-        header::before, footer::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 80%);
-            animation: ripple 15s linear infinite;
-        }
-        @keyframes ripple {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .container {
-            max-width: 1000px;
-            margin: 2rem auto;
-            padding: 0 2rem;
-        }
-        .api-card {
-            background-color: var(--card-background);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
-        }
-        .api-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 20px rgba(0,0,0,0.3);
-        }
-        .api-title {
-            font-size: 1.4rem;
-            margin-bottom: 0.8rem;
-            color: var(--secondary-color);
-        }
-        .api-description {
-            margin-bottom: 1rem;
-            line-height: 1.6;
-        }
-        .btn {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(37, 117, 252, 0.7);
-        }
-        .delete-btn {
-            background: linear-gradient(135deg, #ff3860, #ff0844);
-            margin-left: 1rem;
-        }
-        .delete-btn:hover {
-            box-shadow: 0 0 20px rgba(255, 56, 96, 0.7);
-        }
-        #loader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-        }
-        .progress {
-            width: 0;
-            height: 5px;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            transition: width 0.2s ease;
-        }
-        #apiForm {
-            background-color: var(--card-background);
-            padding: 2rem;
-            border-radius: 12px;
-            margin-bottom: 2rem;
-            display: none;
-        }
-        #apiForm h2 {
-            margin-top: 0;
-            color: var(--secondary-color);
-        }
-        input, textarea {
-            width: 100%;
-            padding: 0.8rem;
-            margin-bottom: 1rem;
-            border: none;
-            border-radius: 5px;
-            background-color: rgba(255, 255, 255, 0.1);
-            color: var(--text-color);
-        }
-        input:focus, textarea:focus {
-            outline: none;
-            box-shadow: 0 0 0 2px var(--secondary-color);
-        }
-    </style>
-</head>
-<body>
-    <div id="loader">
-        <div class="progress"></div>
-    </div>
+<!DOCTYPE html>  
+<html lang="tr">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>Starr Inc. - API Hizmetleri</title>  
+    <link rel="icon" href="" type="image/x-icon">  
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">  
+    <style>  
+        /* Önceki CSS kodları buraya */  
 
-    <header>
-        <h1>Starr Inc. - API Hizmetleri</h1>
-    </header>
+        .popup {  
+            display: none;  
+            position: fixed;  
+            top: 0;  
+            left: 0;  
+            width: 100%;  
+            height: 100%;  
+            background-color: rgba(0, 0, 0, 0.7);  
+            z-index: 1000;  
+        }  
 
-    <div class="container">
-        <div id="apiForm">
-            <h2>Yeni API Ekle</h2>
-            <input type="text" id="apiName" placeholder="API Adı" required>
-            <textarea id="apiDescription" placeholder="API Açıklaması" required></textarea>
-            <input type="url" id="apiUrl" placeholder="API URL" required>
-            <button id="submitApiBtn" class="btn">Ekle</button>
-        </div>
+        .popup-content {  
+            background-color: var(--card-background);  
+            margin: 10% auto;  
+            padding: 20px;  
+            width: 80%;  
+            max-width: 600px;  
+            border-radius: 12px;  
+            position: relative;  
+        }  
 
-        <div id="apiList"></div>
-    </div>
+        .close {  
+            color: #aaa;  
+            float: right;  
+            font-size: 28px;  
+            font-weight: bold;  
+            cursor: pointer;  
+        }  
 
-    <footer>
-        <p>&copy; 2024 - Starr Inc. - Tüm hakları saklıdır.</p>
-    </footer>
+        .close:hover,  
+        .close:focus {  
+            color: #fff;  
+            text-decoration: none;  
+            cursor: pointer;  
+        }  
 
-    <script>
-        const apiForm = document.getElementById('apiForm');
-        const apiList = document.getElementById('apiList');
-        const submitApiBtn = document.getElementById('submitApiBtn');
-        const loader = document.getElementById('loader');
-        const progress = document.querySelector('.progress');
+        .code-section {  
+            margin-top: 20px;  
+            max-height: 300px;  
+            overflow-y: auto;  
+        }  
 
-        let isAdmin = false;
+        .code-panel {  
+            background-color: #2a2a2a;  
+            padding: 10px;  
+            border-radius: 5px;  
+            margin-bottom: 10px;  
+        }  
 
-        function showLoader() {
-            loader.style.display = 'flex';
-            simulateLoading();
-        }
+        .copy-btn {  
+            background-color: var(--secondary-color);  
+            color: white;  
+            border: none;  
+            padding: 5px 10px;  
+            border-radius: 5px;  
+            cursor: pointer;  
+            margin-top: 5px;  
+        }  
+    </style>  
+</head>  
+<body>  
+    <!-- Önceki HTML kodları buraya -->  
 
-        function hideLoader() {
-            loader.style.display = 'none';
-            progress.style.width = '0%';
-        }
+    <div class="container">  
+        <div id="apiList"></div>  
+    </div>  
 
-        function simulateLoading() {
-            let width = 0;
-            const interval = setInterval(() => {
-                if (width >= 100) {
-                    clearInterval(interval);
-                    hideLoader();
-                } else {
-                    width += 10;
-                    progress.style.width = width + '%';
-                }
-            }, 200);
-        }
+    <div id="codePopup" class="popup">  
+        <div class="popup-content">  
+            <span class="close">&times;</span>  
+            <h2 id="popupTitle"></h2>  
+            <div class="code-section">  
+                <h3>Discord.js</h3>  
+                <div class="code-panel">  
+                    <pre id="jsCode"></pre>  
+                    <button class="copy-btn" onclick="copyCode('jsCode')">Kopyala</button>  
+                </div>  
+                <h3>Python</h3>  
+                <div class="code-panel">  
+                    <pre id="pythonCode"></pre>  
+                    <button class="copy-btn" onclick="copyCode('pythonCode')">Kopyala</button>  
+                </div>  
+                <h3>BDFD</h3>  
+                <div class="code-panel">  
+                    <pre id="bdfdCode"></pre>  
+                    <button class="copy-btn" onclick="copyCode('bdfdCode')">Kopyala</button>  
+                </div>  
+            </div>  
+        </div>  
+    </div>  
 
-        async function loadAPIs() {
-            showLoader();
-            apiList.innerHTML = '<h2></h2>';
+    <div id="parameterPopup" class="popup">  
+        <div class="popup-content">  
+            <span class="close">&times;</span>  
+            <h2 id="parameterTitle"></h2>  
+            <div id="parameterContent"></div>  
+        </div>  
+    </div>  
+
+    <footer>  
+        <p>&copy; 2024 - Starr Inc. - Tüm hakları saklıdır.</p>  
+    </footer>  
+
+    <script>  
+        const apiList = document.getElementById('apiList');  
+        const loader = document.getElementById('loader');  
+        const progress = document.querySelector('.progress');  
+        const codePopup = document.getElementById('codePopup');  
+        const parameterPopup = document.getElementById('parameterPopup');  
+        const closeButtons = document.getElementsByClassName('close');  
+
+        let isAdmin = false;  
+
+        function showLoader() {  
+            loader.style.display = 'flex';  
+            simulateLoading();  
+        }  
+
+        function hideLoader() {  
+            loader.style.display = 'none';  
+            progress.style.width = '0%';  
+        }  
+
+        function simulateLoading() {  
+            let width = 0;  
+            const interval = setInterval(() => {  
+                if (width >= 100) {  
+                    clearInterval(interval);  
+                    hideLoader();  
+                } else {  
+                    width += 10;  
+                    progress.style.width = width + '%';  
+                }  
+            }, 200);  
+        }  
+
+        async function loadAPIs() {  
+            showLoader();  
+            apiList.innerHTML = '<h2>API Listesi</h2>';  
             
-            const response = await fetch('/api/apis');  // Backend'deki api.json verilerini çek
-            const apiListData = await response.json();
+            const response = await fetch('/api/apis');  
+            const apiListData = await response.json();  
 
-            apiListData.forEach((api, index) => {
-                const apiCard = document.createElement('div');
-                apiCard.className = 'api-card';
-                apiCard.innerHTML = `
-                    <h3 class="api-title">${api.name}</h3>
-                    <p class="api-description">${api.description}</p>
-                    <button class="btn" onclick="openApiUrl('${api.url}')">API'ye Git</button>
-                    ${isAdmin ? `<button class="btn delete-btn" onclick="deleteAPI(${index})">Sil</button>` : ''}
-                `;
-                apiList.appendChild(apiCard);
-            });
-        }
+            apiListData.forEach((api, index) => {  
+                const apiCard = document.createElement('div');  
+                apiCard.className = 'api-card';  
+                apiCard.innerHTML = `  
+                    <h3 class="api-title">${api.name}</h3>  
+                    <p class="api-description">${api.description}</p>  
+                    <button class="btn" onclick="openApiUrl('${api.url}')">API'ye Git</button>  
+                    <button class="btn" onclick="showCodeExamples('${api.name}', '${api.url}')">Kod Örnekleri</button>  
+                    <button class="btn" onclick="showParameters('${api.name}', ${JSON.stringify(api.parameters)})">Parametreler</button>  
+                    ${isAdmin ? `<button class="btn delete-btn" onclick="deleteAPI(${index})">Sil</button>` : ''}  
+                `;  
+                apiList.appendChild(apiCard);  
+            });  
 
-        function openApiUrl(url) {
-            window.open(url, '_blank');
-        }
+            hideLoader();  
+        }  
 
-        async function deleteAPI(index) {
-            await fetch(`/api/apis/${index}`, { method: 'DELETE' });
-            loadAPIs();
-        }
+        function openApiUrl(url) {  
+            window.open(url, '_blank');  
+        }  
 
-        submitApiBtn.addEventListener('click', async () => {
-            const name = document.getElementById('apiName').value;
-            const description = document.getElementById('apiDescription').value;
-            const url = document.getElementById('apiUrl').value;
+        async function deleteAPI(index) {  
+            await fetch(`/api/apis/${index}`, { method: 'DELETE' });  
+            loadAPIs();  
+        }  
 
-            if (name && description && url) {
-                await fetch('/api/apis', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, description, url })
-                });
+        function showCodeExamples(apiName, apiUrl) {  
+            document.getElementById('popupTitle').textContent = `${apiName} - Kod Örnekleri`;  
+            document.getElementById('jsCode').textContent = generateJsCode(apiUrl);  
+            document.getElementById('pythonCode').textContent = generatePythonCode(apiUrl);  
+            document.getElementById('bdfdCode').textContent = generateBDFDCode(apiUrl);  
+            codePopup.style.display = 'block';  
+        }  
 
-                loadAPIs();
-            } else {
-                alert("Lütfen tüm alanları doldurun.");
-            }
-        });
+        function showParameters(apiName, parameters) {  
+            document.getElementById('parameterTitle').textContent = `${apiName} - Parametreler`;  
+            const parameterContent = document.getElementById('parameterContent');  
+            parameterContent.innerHTML = '';  
+            parameters.forEach(param => {  
+                parameterContent.innerHTML += `  
+                    <h3>${param.name}</h3>  
+                    <p>${param.description}</p>  
+                    <p>Tür: ${param.type}</p>  
+                    <p>Zorunlu: ${param.required ? 'Evet' : 'Hayır'}</p>  
+                    <hr>  
+                `;  
+            });  
+            parameterPopup.style.display = 'block';  
+        }  
 
-        window.onload = loadAPIs;
-    </script>
-</body>
+        function generateJsCode(apiUrl) {  
+            return `const fetch = require('node-fetch');  
+
+async function fetchAPI() {  
+    const response = await fetch('${apiUrl}');  
+    const data = await response.json();  
+    console.log(data);  
+}  
+
+fetchAPI();`;  
+        }  
+
+        function generatePythonCode(apiUrl) {  
+            return `import requests  
+
+response = requests.get('${apiUrl}')  
+data = response.json()  
+print(data)`;  
+        }  
+
+        function generateBDFDCode(apiUrl) {  
+            return `$nomention  
+$httpGet[${apiUrl}]  
+$sendMessage[$httpResult]`;  
+        }  
+
+        function copyCode(elementId) {  
+            const codeElement = document.getElementById(elementId);  
+            const textArea = document.createElement('textarea');  
+            textArea.value = codeElement.textContent;  
+            document.body.appendChild(textArea);  
+            textArea.select();  
+            document.execCommand('copy');  
+            document.body.removeChild(textArea);  
+            alert('Kod kopyalandı!');  
+        }  
+
+        for (let i = 0; i < closeButtons.length; i++) {  
+            closeButtons[i].onclick = function() {  
+                codePopup.style.display = 'none';  
+                parameterPopup.style.display = 'none';  
+            }  
+        }  
+
+        window.onclick = function(event) {  
+            if (event.target == codePopup) {  
+                codePopup.style.display = 'none';  
+            }  
+            if (event.target == parameterPopup) {  
+                parameterPopup.style.display = 'none';  
+            }  
+        }  
+
+        window.onload = loadAPIs;  
+    </script>  
+</body>  
 </html>
